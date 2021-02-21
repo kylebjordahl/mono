@@ -85,6 +85,12 @@
             "jestConfig": "apps/go/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "relay": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "node -e \"gun = (Gun = require('gun'))({web: require('http').createServer(Gun.serve(__dirname+'/.gun-relay')).listen(8765) })\""
+          }
         }
       }
     },
@@ -110,6 +116,107 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/go-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "holiday-lights": {
+      "root": "apps/holiday-lights",
+      "sourceRoot": "apps/holiday-lights/src",
+      "projectType": "application",
+      "prefix": "holiday-lights",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/holiday-lights",
+            "main": "apps/holiday-lights/src/main.ts",
+            "tsConfig": "apps/holiday-lights/tsconfig.app.json",
+            "assets": ["apps/holiday-lights/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/holiday-lights/src/environments/environment.ts",
+                  "with": "apps/holiday-lights/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "port": 9229,
+            "buildTarget": "holiday-lights:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/holiday-lights/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/holiday-lights/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "clicker-api": {
+      "root": "apps/clicker-api",
+      "sourceRoot": "apps/clicker-api/src",
+      "projectType": "application",
+      "prefix": "clicker-api",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/clicker-api",
+            "main": "apps/clicker-api/src/main.ts",
+            "tsConfig": "apps/clicker-api/tsconfig.app.json",
+            "assets": ["apps/clicker-api/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/clicker-api/src/environments/environment.ts",
+                  "with": "apps/clicker-api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "clicker-api:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/clicker-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/clicker-api/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }
