@@ -1,0 +1,13 @@
+<h1>City Grid</h1>
+<button (click)="onReset()">Reset</button>
+<ng-container *ngIf="lots$ | async as lots">
+  <div class="grid">
+    <div *ngFor="let lot of lots" class="lot" [ngStyle]="placeLotOnGrid(lot)">
+      <vegas-property
+        *ngIf="lot.property as property"
+        [property]="property"
+        [address]="lot.address"
+      ></vegas-property>
+    </div>
+  </div>
+</ng-container>

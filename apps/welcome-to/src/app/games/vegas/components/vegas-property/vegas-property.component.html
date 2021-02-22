@@ -1,0 +1,41 @@
+<div fxLayout="column">
+  <div
+    *ngIf="property.golfDefinition as par"
+    [class]="
+      property.hasGolf === null ? '' : property.hasGolf ? 'linked' : 'broken'
+    "
+  >
+    Par {{ par }}
+  </div>
+  <div *ngIf="property.canHaveShow">
+    <ng-container *ngIf="property.hasShow; else offerShow"
+      >⭐️ Show!</ng-container
+    >
+    <ng-template #offerShow>
+      <button
+        [disabled]="property.casinoNumber === null"
+        (click)="onOpenShow()"
+      >
+        Open ⭐️ Show
+      </button>
+    </ng-template>
+  </div>
+  <div>
+    <ng-container *ngIf="property.isConstructed; else offerBuild"
+      ><input
+        type="number"
+        class="casino-number"
+        [disabled]="!!property.casinoNumber"
+        [value]="property.casinoNumber"
+        max="17"
+        min="0"
+        (change)="onCasinoNumberAssign($event)"
+    /></ng-container>
+    <ng-template #offerBuild>
+      <button (click)="onPropertyBuild()">Build</button>
+    </ng-template>
+  </div>
+  <div class="red-carpet" *ngIf="property.redCarpet">
+    {{ property.redCarpet }}
+  </div>
+</div>

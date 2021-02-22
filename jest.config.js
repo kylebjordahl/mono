@@ -3,5 +3,6 @@ module.exports = {
     '<rootDir>/apps/go',
     '<rootDir>/apps/holiday-lights',
     '<rootDir>/apps/clicker-api',
+    '<rootDir>/apps/welcome-to',
   ],
 };

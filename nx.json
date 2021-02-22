@@ -38,6 +38,13 @@
     },
     "clicker-api": {
       "tags": []
+    },
+    "welcome-to": {
+      "tags": []
+    },
+    "welcome-to-e2e": {
+      "tags": [],
+      "implicitDependencies": ["welcome-to"]
     }
   }
 }
