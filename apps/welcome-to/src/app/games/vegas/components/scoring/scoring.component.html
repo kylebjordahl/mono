@@ -1,0 +1,41 @@
+<pre>{{ score$ | async }}</pre>
+
+<section class="improvements">
+  Make Improvements<br />
+  <select [(ngModel)]="selectedArea" name="selectedArea">
+    <option *ngFor="let area of ImprovementAreas" [value]="area">
+      {{ area }}
+    </option></select
+  ><br />
+  <button (click)="onImprove()">Improve!</button>
+
+  <div *ngIf="improvement$ | async as improvements" fxLayout="row wrap">
+    <div
+      class="improvement-track"
+      *ngFor="let area of ImprovementAreas"
+      fxFlex="initial"
+      fxLayout="column"
+    >
+      {{ area }}:
+      <div
+        *ngFor="let i of improvements[area]"
+        class="improvement"
+        [class.marked]="i.marked"
+        fxFlex="initial"
+      >
+        {{ i.value }}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="inauguration" fxLayout="row">
+  <button fxFlex (click)="onInaugurationStep()">Inauguration Step</button>
+  <button
+    fxFlex
+    *ngIf="bonusAvailable$ | async as bonusCount"
+    (click)="onUseInaugurationBonus()"
+  >
+    Use Inauguration Bonus ({{ bonusCount }})
+  </button>
+</section>

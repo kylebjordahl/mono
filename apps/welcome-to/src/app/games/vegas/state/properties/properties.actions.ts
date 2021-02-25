@@ -2,10 +2,6 @@ import { createAction, props } from '@ngrx/store'
 
 import { LotAddress, Property } from './properties.models'
 
-export const initializeProperties = createAction(
-  '[Properties] Initialize Properties'
-)
-
 export const constructProperty = createAction(
   '[Properties] Construct property',
   props<{ address: LotAddress }>()

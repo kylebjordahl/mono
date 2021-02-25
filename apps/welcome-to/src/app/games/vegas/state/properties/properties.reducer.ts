@@ -32,6 +32,14 @@ export const propertiesReducer = createReducer(
       canHaveShow,
     ]),
   })),
+  on(PropertyActions.constructProperty, (state, { address }) => {
+    return {
+      lots: changeByAddress(state.lots, address, 'isConstructed', () => true, [
+        hasProperty,
+        R.compose(R.not, isConstructed),
+      ]),
+    }
+  }),
   on(PropertyActions.updateProperty, (state, { address, property }) => ({
     lots: R.over(
       R.lensPath([
@@ -42,14 +50,6 @@ export const propertiesReducer = createReducer(
       state.lots
     ),
   }))
-  // on(PropertyActions.constructProperty, (state, { address }) => {
-  //   return {
-  //     lots: changeByAddress(state.lots, address, 'isConstructed', () => true, [
-  //       hasProperty,
-  //       R.compose(R.not, isConstructed),
-  //     ]),
-  //   }
-  // }),
   // on(PropertyActions.openCasino, (state, { address, casinoNumber }) => ({
   //   lots: changeByAddress(
   //     state.lots,

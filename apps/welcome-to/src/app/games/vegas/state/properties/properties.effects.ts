@@ -6,7 +6,7 @@ import { map, switchMap, withLatestFrom } from 'rxjs/operators'
 import * as PropertiesActions from './properties.actions'
 import * as fromProperties from './properties.selectors'
 import * as R from 'ramda'
-import { from } from 'rxjs'
+import { EMPTY, from } from 'rxjs'
 
 @Injectable()
 export class PropertiesEffects {
@@ -17,7 +17,7 @@ export class PropertiesEffects {
       switchMap(([{ address, casinoNumber }, lots]) => {
         // casino number constraints
         if (casinoNumber > 17 || casinoNumber < 0) {
-          return null
+          return EMPTY
         }
 
         const thisStreet = lots
@@ -39,7 +39,7 @@ export class PropertiesEffects {
               l.property?.casinoNumber < casinoNumber
           )
         ) {
-          return null
+          return EMPTY
         }
         if (
           !rightOfAddress.every(
@@ -48,7 +48,7 @@ export class PropertiesEffects {
               l.property?.casinoNumber > casinoNumber
           )
         ) {
-          return null
+          return EMPTY
         }
 
         // Your custom service 'load' logic goes here. For now just return a success action...

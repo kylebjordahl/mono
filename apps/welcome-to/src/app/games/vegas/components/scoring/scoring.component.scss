@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  flex-direction: column;
+}
+
+.improvement-track {
+  padding: 0.2rem;
+  .improvement {
+    &.marked {
+      text-decoration: line-through;
+      opacity: 0.4;
+    }
+  }
+}

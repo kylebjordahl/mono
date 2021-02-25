@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { FormsModule } from '@angular/forms'
 import { StoreModule } from '@ngrx/store'
 import { EffectsModule } from '@ngrx/effects'
 import * as fromProperties from './state/properties/properties.reducer'
@@ -10,24 +11,35 @@ import { VegasPropertyComponent } from './components/vegas-property/vegas-proper
 import { CityComponent } from './components/city/city.component'
 import { FlexLayoutModule } from '@angular/flex-layout'
 import { localStorageSync } from 'ngrx-store-localstorage'
+import * as fromScoring from './state/scoring/scoring.reducer'
+import { ScoringComponent } from './components/scoring/scoring.component'
+import { ScoringEffects } from './state/scoring/scoring.effects'
 
 @NgModule({
-  declarations: [VegasPropertyComponent, CityComponent],
+  declarations: [VegasPropertyComponent, CityComponent, ScoringComponent],
   imports: [
+    FormsModule,
     FlexLayoutModule,
     CommonModule,
     StoreModule.forFeature(
       fromProperties.PROPERTIES_FEATURE_KEY,
       fromProperties.propertiesReducer
     ),
-    EffectsModule.forFeature([PropertiesEffects]),
+    StoreModule.forFeature(
+      fromScoring.SCORING_FEATURE_KEY,
+      fromScoring.scoringReducer
+    ),
+    EffectsModule.forFeature([PropertiesEffects, ScoringEffects]),
     StoreModule.forRoot(
       {},
       {
         metaReducers: !environment.production
           ? [
               localStorageSync({
-                keys: [fromProperties.PROPERTIES_FEATURE_KEY],
+                keys: [
+                  fromProperties.PROPERTIES_FEATURE_KEY,
+                  fromScoring.SCORING_FEATURE_KEY,
+                ],
                 rehydrate: true,
               }),
             ]
@@ -41,6 +53,6 @@ import { localStorageSync } from 'ngrx-store-localstorage'
     EffectsModule.forRoot([]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
-  exports: [CityComponent],
+  exports: [CityComponent, ScoringComponent],
 })
 export class VegasModule {}
