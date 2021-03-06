@@ -1,12 +1,13 @@
 import * as PropertyActions from './properties.actions'
-import { Property, LotAddress, Lot } from './properties.models'
-import { initialLots } from './initialProperties'
+import { Property, StreetAvenueAddress, Lot, RoadSegment, Intersection, Hotel, HotelSize } from './properties.models'
+import { allRoads, initialLots, intersections } from './initialProperties'
 import { createReducer, on } from '@ngrx/store'
 import * as R from 'ramda'
 import * as GameActions from '../game/game.actions'
 
 export interface State {
   lots: Lot[]
+  hotels: Hotel[]
 }
 
 export const PROPERTIES_FEATURE_KEY = 'PROPERTIES'
@@ -17,14 +18,14 @@ export interface PartialPropertiesState {
 
 export const initialState: State = {
   lots: initialLots,
+  hotels: Array(11).fill({available: HotelSize.Full, opened: null}).map((h,idx)=>({...h, avenue:idx+1}))
 }
 
 export const propertiesReducer = createReducer(
   initialState,
-  on(GameActions.reset, () => ({
-    lots: initialLots,
-  })),
+  on(GameActions.reset, () => initialState),
   on(PropertyActions.openShow, (state, { address }) => ({
+    ...state,
     lots: changeByAddress(state.lots, address, 'hasShow', () => true, [
       hasProperty,
       isConstructed,
@@ -34,21 +35,50 @@ export const propertiesReducer = createReducer(
   })),
   on(PropertyActions.constructProperty, (state, { address }) => {
     return {
+    ...state,
       lots: changeByAddress(state.lots, address, 'isConstructed', () => true, [
         hasProperty,
         R.compose(R.not, isConstructed),
       ]),
     }
   }),
+  on(PropertyActions.changeHotelAvailability, (state, {available, avenue})=>({
+    ...state,
+    hotels: R.over(
+      R.lensPath([
+        R.findIndex(R.propEq('avenue', avenue), state.hotels),
+        'available'
+      ]),
+      ()=>available,
+      state.hotels
+    ) as Hotel[]
+  })),
+  on(PropertyActions.openHotel, (state, { avenue})=>({
+    ...state,
+    hotels: R.over(
+      R.lensPath([
+        R.findIndex(R.propEq('avenue', avenue), state.hotels),
+
+      ]),
+      (hotel: Hotel):Hotel=>({
+        ...hotel,
+        available: HotelSize.Partial,
+        opened: hotel.available,
+      }),
+      state.hotels
+    ) as Hotel[]
+  })),
   on(PropertyActions.updateProperty, (state, { address, property }) => ({
+    ...state,
+
     lots: R.over(
       R.lensPath([
         R.findIndex(R.propEq('address', address), state.lots),
         'property',
       ]),
-      R.mergeDeepLeft(property),
+      (existing: Record<string, unknown> | undefined)=>existing ? R.mergeDeepLeft(property, existing) : undefined,
       state.lots
-    ),
+    ) as Lot[],
   }))
   // on(PropertyActions.openCasino, (state, { address, casinoNumber }) => ({
   //   lots: changeByAddress(
@@ -104,7 +134,7 @@ export const propertiesReducer = createReducer(
 
 function changeByAddress<T extends keyof Property>(
   lots: Lot[],
-  address: LotAddress,
+  address: StreetAvenueAddress,
   key: T,
   updateFn: (x: Property[T]) => Property[T],
   checks?: ((x: Lot, lots: Lot[]) => boolean)[]

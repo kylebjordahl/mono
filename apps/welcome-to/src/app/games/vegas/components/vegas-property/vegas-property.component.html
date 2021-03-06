@@ -1,29 +1,33 @@
-<div fxLayout="column">
-  <div
-    *ngIf="property.golfDefinition as par"
-    [class]="
-      property.hasGolf === null ? '' : property.hasGolf ? 'linked' : 'broken'
-    "
-  >
-    Par {{ par }}
-  </div>
-  <div *ngIf="property.canHaveShow">
+<div
+  *ngIf="property.golfDefinition as par"
+  [class.golf]="true"
+  [class]="
+    property.hasGolf === null ? '' : property.hasGolf ? 'linked' : 'broken'
+  "
+  fxFlex="initial"
+>
+  Par {{ par }}
+</div>
+<div class="building" fxFlex fxLayout="column" fxLayoutAlign="center center">
+  <div class="show" *ngIf="property.canHaveShow">
     <ng-container *ngIf="property.hasShow; else offerShow"
-      >⭐️ Show!</ng-container
+      >🌟</ng-container
     >
     <ng-template #offerShow>
-      <button
+      <ng-container *ngIf="!isOfferingShowTrack; else showTrackSelect">
+        <button
         [disabled]="property.casinoNumber === null"
-        (click)="onOpenShow()"
+        (click)="isOfferingShowTrack=true"
       >
-        Open ⭐️ Show
+        ☆
       </button>
+      </ng-container>
     </ng-template>
   </div>
-  <div>
+  <div class="building-center">
     <ng-container *ngIf="property.isConstructed; else offerBuild"
       ><input
-        type="number"
+        type="text"
         class="casino-number"
         [disabled]="!!property.casinoNumber"
         [value]="property.casinoNumber"
@@ -32,10 +36,15 @@
         (change)="onCasinoNumberAssign($event)"
     /></ng-container>
     <ng-template #offerBuild>
-      <button (click)="onPropertyBuild()">Build</button>
+      <button (click)="onPropertyBuild()">🛠</button>
     </ng-template>
   </div>
   <div class="red-carpet" *ngIf="property.redCarpet">
     {{ property.redCarpet }}
   </div>
 </div>
+
+<ng-template #showTrackSelect>
+  <button (click)="onOpenShow('LEFT')">Left</button>
+  <button (click)="onOpenShow('RIGHT')">Right</button>
+</ng-template>

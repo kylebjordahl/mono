@@ -1,6 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store'
 import * as R from 'ramda'
-import { Lot, LotAddress, Property } from './properties.models'
+import { allRoads, intersections } from './initialProperties'
+import { Lot, StreetAvenueAddress, Property } from './properties.models'
 import {
   PartialPropertiesState,
   PROPERTIES_FEATURE_KEY,
@@ -15,7 +16,19 @@ export const selectPropertiesFeature = createFeatureSelector<
 
 export const selectLots = createSelector(
   selectPropertiesFeature,
-  (state) => state.lots
+
+  (state) => {
+    console.log({state})
+    return state.lots.map(lot=>({
+        ...lot,
+        roads:{
+          street : allRoads.find(r=>r.orientation==='STREET' && R.equals(lot.address,r.address)),
+          avenue : allRoads.find(r=>r.orientation==='AVENUE' && R.equals(lot.address,r.address))
+        },
+        intersection: intersections?.find(i=>R.equals(i.address, lot.address))
+      }))
+  }
+
 )
 
 export const selectProperties = createSelector(selectLots, (lots) =>
@@ -26,7 +39,7 @@ export const selectProperties = createSelector(selectLots, (lots) =>
   )
 )
 
-export const selectPropertyByAddress = (address: LotAddress) =>
+export const selectPropertyByAddress = (address: StreetAvenueAddress) =>
   createSelector(selectLots, (lots) =>
     lots.find((l) => R.equals(l.address, address))
   )
@@ -38,4 +51,9 @@ export const selectCityGrid = createSelector(
       R.values,
       R.groupBy<Lot>((x) => x.address.street.toFixed())
     )(lots) as Lot[][]
+)
+
+export const selectHotels = createSelector(
+  selectPropertiesFeature,
+  (state)=>state.hotels
 )

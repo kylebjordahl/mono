@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store'
 import * as R from 'ramda'
-import { ImprovementArea, ScoringData } from './scoring.model'
+import { ScoringData } from './scoring.model'
 import {
   PartialScoringState,
   ScoreState,
@@ -37,4 +37,19 @@ export const selectAvailableScoringBonuses = createSelector(
   ({ inaugurationBonusesUsed, inaugurationTrack }) =>
     ScoringData.inaugurationTrackBonusesAvailable(inaugurationTrack) -
     inaugurationBonusesUsed
+)
+
+export const selectShowTracks = createSelector(
+  selectScoringFeature,
+  ({ shows }) =>
+    R.mapObjIndexed((improvementCount, area) => {
+      const mapped = (ScoringData.show[area] as unknown[]).map(
+        (value, idx) => ({
+          value,
+          marked: idx < improvementCount,
+          cash: ScoringData.show[`${area}Cash`].includes(idx + 1),
+        })
+      )
+      return { shows: mapped, isStarted: mapped.some((m) => m.marked) }
+    }, shows)
 )

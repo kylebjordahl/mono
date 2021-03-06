@@ -5,12 +5,13 @@ import { Store } from '@ngrx/store'
 import { map, withLatestFrom } from 'rxjs/operators'
 
 import { doInaugurationEvent } from './scoring.actions'
-import { selectInaugurationTrackCount } from './scoring.selectors'
+import { selectInaugurationTrackCount,  } from './scoring.selectors'
 import { endGame } from '../game/game.actions'
+
 
 @Injectable()
 export class ScoringEffects {
-  openCasino$ = createEffect(() =>
+  innaugurationEvent$ = createEffect(() =>
     this.actions$.pipe(
       ofType(doInaugurationEvent),
       withLatestFrom(this.store.select(selectInaugurationTrackCount)),

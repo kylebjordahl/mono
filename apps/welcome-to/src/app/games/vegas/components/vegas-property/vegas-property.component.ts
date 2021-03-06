@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { Store } from '@ngrx/store'
-import { LotAddress, Property } from '../../state/properties/properties.models'
+import {
+  StreetAvenueAddress,
+  Property,
+} from '../../state/properties/properties.models'
 
 import * as PropertyActions from '../../state/properties/properties.actions'
 
@@ -14,7 +17,9 @@ export class VegasPropertyComponent {
   property: Property
 
   @Input()
-  address: LotAddress
+  address: StreetAvenueAddress
+
+  isOfferingShowTrack=false
 
   constructor(private readonly store: Store) {}
 
@@ -50,7 +55,8 @@ export class VegasPropertyComponent {
     )
   }
 
-  onOpenShow(): void {
-    this.store.dispatch(PropertyActions.openShow({ address: this.address }))
+  onOpenShow(track: "LEFT" | "RIGHT"): void {
+    this.store.dispatch(PropertyActions.openShow({ address: this.address, showTrack:track }))
+    this.isOfferingShowTrack = false
   }
 }

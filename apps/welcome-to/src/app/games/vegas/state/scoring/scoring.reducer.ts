@@ -41,10 +41,12 @@ export interface ScoreState {
     /** max is 3 */
     [ImprovementArea.LimoPenalty]: number
   }
-  /** max is 6 */
-  showTrackLeft: number
-  /** max is 6 */
-  showTrackRight: number
+  shows:{
+    /** max is 6 */
+    left: number
+    /** max is 6 */
+    right: number
+  }
 
   projects: {
     pink: number
@@ -65,8 +67,10 @@ export const initialState: ScoreState = {
   inaugurationBonusesUsed: 0,
   inaugurationRank: null,
   wasLastInauguration: null,
-  showTrackLeft: 0,
-  showTrackRight: 0,
+  shows:{
+    left: 0,
+    right:0,
+  },
   improvements: {
     [ImprovementArea.Inauguration]: 0,
     [ImprovementArea.FullHotel]: 0,
@@ -93,6 +97,14 @@ export const scoringReducer = createReducer(
     ...state,
     debts: state.debts + 1,
   })),
+  on(ScoringAction.addDebt, (state) => ({
+    ...state,
+    debts: state.debts + 1,
+  })),
+  on(ScoringAction.addCredit, (state) => ({
+    ...state,
+    credits: state.credits + 1,
+  })),
   on(ScoringAction.doInaugurationEvent, (state) => ({
     ...state,
     inaugurationTrack: Math.min(14, state.inaugurationTrack + 1),
@@ -112,6 +124,30 @@ export const scoringReducer = createReducer(
           ScoringData.improvements[area].length - 1
         ),
       state
-    )
+    ) as ScoreState
+  }),
+  on(PropertyAction.openShow, (state, action)=>{
+    const track =action.showTrack.toLocaleLowerCase()
+    const lens =R.lensPath(['shows', track])
+    const newState = R.over(
+      lens,
+      (current:number)=>current+1,
+      state
+    ) as ScoreState
+
+    // process debts
+    const currentShowCount = R.view(lens,newState) as number
+    if(currentShowCount===1){
+      // always add two debts for first show on track,
+      newState.debts += 2
+    } else {
+      if(track==='left' && (currentShowCount == 5 || currentShowCount == 6)){
+        newState.credits += 1
+      } else if(track==='right' && (currentShowCount == 3 || currentShowCount == 4)){
+        newState.credits += 1
+      }
+    }
+
+    return newState
   })
 )

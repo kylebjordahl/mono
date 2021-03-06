@@ -12,6 +12,7 @@ import {
   selectAvailableScoringBonuses,
   selectImprovements,
   selectScoringFeature,
+  selectShowTracks,
 } from '../../state/scoring/scoring.selectors'
 
 @Component({
@@ -31,6 +32,8 @@ export class ScoringComponent implements OnInit {
   improvement$ = this.store.select(selectImprovements)
 
   bonusAvailable$ = this.store.select(selectAvailableScoringBonuses)
+
+  show$ = this.store.select(selectShowTracks)
 
   constructor(private readonly store: Store) {
     console.log(this.ImprovementAreas)

@@ -11,4 +11,14 @@
       opacity: 0.4;
     }
   }
+
+  .cash {
+    box-sizing: border-box;
+    border: 1px solid transparent;
+
+    &.circled {
+      border: 1px solid red;
+      border-radius: 50%;
+    }
+  }
 }

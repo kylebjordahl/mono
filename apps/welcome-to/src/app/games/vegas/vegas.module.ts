@@ -12,11 +12,13 @@ import { CityComponent } from './components/city/city.component'
 import { FlexLayoutModule } from '@angular/flex-layout'
 import { localStorageSync } from 'ngrx-store-localstorage'
 import * as fromScoring from './state/scoring/scoring.reducer'
+import * as fromLimo from './state/limo/limo.reducer'
 import { ScoringComponent } from './components/scoring/scoring.component'
-import { ScoringEffects } from './state/scoring/scoring.effects'
+import { ScoringEffects } from './state/scoring/scoring.effects';
+import { VegasBlockComponent } from './components/vegas-block/vegas-block.component'
 
 @NgModule({
-  declarations: [VegasPropertyComponent, CityComponent, ScoringComponent],
+  declarations: [VegasPropertyComponent, CityComponent, ScoringComponent, VegasBlockComponent],
   imports: [
     FormsModule,
     FlexLayoutModule,
@@ -29,19 +31,23 @@ import { ScoringEffects } from './state/scoring/scoring.effects'
       fromScoring.SCORING_FEATURE_KEY,
       fromScoring.scoringReducer
     ),
+    StoreModule.forFeature(
+      fromLimo.LIMO_FEATURE_KEY,
+      fromLimo.limoReducer
+    ),
     EffectsModule.forFeature([PropertiesEffects, ScoringEffects]),
     StoreModule.forRoot(
       {},
       {
         metaReducers: !environment.production
           ? [
-              localStorageSync({
-                keys: [
-                  fromProperties.PROPERTIES_FEATURE_KEY,
-                  fromScoring.SCORING_FEATURE_KEY,
-                ],
-                rehydrate: true,
-              }),
+              // localStorageSync({
+              //   keys: [
+              //     // fromProperties.PROPERTIES_FEATURE_KEY,
+              //     // fromScoring.SCORING_FEATURE_KEY,
+              //   ],
+              //   rehydrate: true,
+              // }),
             ]
           : [],
         runtimeChecks: {

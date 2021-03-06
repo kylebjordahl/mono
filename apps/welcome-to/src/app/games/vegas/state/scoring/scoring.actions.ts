@@ -12,3 +12,6 @@ export const useInaugurationBonus = createAction(
   '[Scoring] Use Inauguration Bonus'
   // props<unknown>()
 )
+
+export const addDebt = createAction('[Scoring] Add Debt')
+export const addCredit = createAction('[Scoring] Add Credit')

@@ -9,12 +9,17 @@
   ><br />
   <button (click)="onImprove()">Improve!</button>
 
-  <div *ngIf="improvement$ | async as improvements" fxLayout="row wrap">
+  <div
+    *ngIf="improvement$ | async as improvements"
+    fxLayout="row wrap"
+    fxLayoutAlign="start start"
+  >
     <div
       class="improvement-track"
       *ngFor="let area of ImprovementAreas"
       fxFlex="initial"
       fxLayout="column"
+      fxLayoutAlign="start, center"
     >
       {{ area }}:
       <div
@@ -26,6 +31,37 @@
         {{ i.value }}
       </div>
     </div>
+    <ng-container *ngIf="show$ | async as shows">
+      <div fxLayout="column">
+        <div>Shows:</div>
+        <div fxLayout="row">
+          <div
+            *ngFor="let track of ['left', 'right']"
+            class="improvement-track"
+            fxFlex="initial"
+            fxLayout="column"
+          >
+            <div
+              *ngFor="let i of shows[track].shows"
+              class="improvement"
+              [class.marked]="i.marked"
+              fxFlex="initial"
+              [fxLayout]="track === 'left' ? 'row' : 'row-reverse'"
+              fxLayoutAlign="end"
+            >
+              <div
+                *ngIf="i.cash"
+                class="cash"
+                [class.circled]="shows[track].isStarted"
+              >
+                💸
+              </div>
+              <div>{{ i.value }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
   </div>
 </section>
 

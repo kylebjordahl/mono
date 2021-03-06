@@ -1,4 +1,4 @@
-import { LotAddress } from '../properties/properties.models'
+import { StreetAvenueAddress } from '../properties/properties.models'
 
 export enum ImprovementArea {
   Inauguration = 'Inauguration',
@@ -14,8 +14,13 @@ export enum ImprovementArea {
 }
 
 export const ScoringData = {
-  showTrackLeft: [0, 3.7, 11, 16, 21, 28],
-  showTrackRight: [0, 3, 6, 9, 12, 15, 18],
+  show: {
+    left: [0, 3.7, 11, 16, 21, 28],
+    leftCash: [5, 6],
+    right: [0, 3, 6, 9, 12, 15, 18],
+    rightCash: [3, 4],
+  },
+
   improvements: {
     [ImprovementArea.Inauguration]: [
       [15, 8, 0],
@@ -36,7 +41,7 @@ export const ScoringData = {
   inaugurationTrackBonusesAvailable: (completedCount) =>
     [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1]
       .slice(0, completedCount)
-      .reduce((sum, curr) => sum + curr),
+      .reduce((sum, curr) => sum + curr, 0),
 }
 
 // export enum InaugurationBonusType{

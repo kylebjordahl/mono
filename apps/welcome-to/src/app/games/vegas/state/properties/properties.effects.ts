@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core'
 import { createEffect, Actions, ofType } from '@ngrx/effects'
-import { Store } from '@ngrx/store'
+import { Action, Store } from '@ngrx/store'
 
 import { map, switchMap, withLatestFrom } from 'rxjs/operators'
 import * as PropertiesActions from './properties.actions'
 import * as fromProperties from './properties.selectors'
 import * as R from 'ramda'
-import { EMPTY, from } from 'rxjs'
+import {  from, of } from 'rxjs'
 
 @Injectable()
 export class PropertiesEffects {
@@ -16,8 +16,14 @@ export class PropertiesEffects {
       withLatestFrom(this.store.select(fromProperties.selectLots)),
       switchMap(([{ address, casinoNumber }, lots]) => {
         // casino number constraints
+        const emptyResponse = of(PropertiesActions.updateProperty({
+          address,
+          property: {
+          },
+        }))
+
         if (casinoNumber > 17 || casinoNumber < 0) {
-          return EMPTY
+          return emptyResponse
         }
 
         const thisStreet = lots
@@ -27,7 +33,7 @@ export class PropertiesEffects {
         const leftOfAddress = thisStreet.filter(
           (l) => l.address.avenue < address.avenue && l.property?.isConstructed
         )
-        const rightOfAddress = lots.filter(
+        const rightOfAddress = thisStreet.filter(
           (l) => l.address.avenue > address.avenue && l.property?.isConstructed
         )
 
@@ -39,7 +45,7 @@ export class PropertiesEffects {
               l.property?.casinoNumber < casinoNumber
           )
         ) {
-          return EMPTY
+          return emptyResponse
         }
         if (
           !rightOfAddress.every(
@@ -48,16 +54,15 @@ export class PropertiesEffects {
               l.property?.casinoNumber > casinoNumber
           )
         ) {
-          return EMPTY
+          return emptyResponse
         }
-
-        // Your custom service 'load' logic goes here. For now just return a success action...
 
         const lotIndex = thisStreet.findIndex((l) =>
           R.equals(l.address, address)
         )
         const lot = thisStreet[lotIndex]
 
+        // GOLF
         const lotsWithGolf = thisStreet.filter(
           (l) => l.property?.hasGolf && l.property.golfDefinition
         )
@@ -82,7 +87,7 @@ export class PropertiesEffects {
 
         // if hasGolf was false and there are lotsWithGolf, that means we didn't connect,
         // so update all lots this side of the existing link
-        const updates = [updateAction]
+        const updates: Action[] = [updateAction]
         if (!hasGolf && lotsWithGolf.length > 0) {
           // split the array over the lotsWithGolf, and keep the half that contains the lot
           const isAbove = lotsWithGolf.every(
@@ -105,6 +110,15 @@ export class PropertiesEffects {
                 },
               })
             )
+          )
+        }
+
+        // check for hotel completion
+        const thisAvenue = lots.filter(l=>l.address.avenue===address.avenue)
+
+        if(thisAvenue.every(l=>l.property?.casinoNumber || R.equals(l, lot))){
+          updates.push(
+            PropertiesActions.openHotel({avenue: address.avenue})
           )
         }
 

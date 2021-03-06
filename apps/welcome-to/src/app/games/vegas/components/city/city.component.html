@@ -1,13 +1,49 @@
-<h1>City Grid</h1>
-<button (click)="onReset()">Reset</button>
-<ng-container *ngIf="lots$ | async as lots">
-  <div class="grid">
-    <div *ngFor="let lot of lots" class="lot" [ngStyle]="placeLotOnGrid(lot)">
-      <vegas-property
-        *ngIf="lot.property as property"
-        [property]="property"
-        [address]="lot.address"
-      ></vegas-property>
+<ng-container *ngIf="currentLimo$ | async as limo">
+  <ng-container *ngIf="lots$ | async as lots">
+    <div class="grid">
+      <!-- lots -->
+      <div *ngFor="let lot of lots" class="lot" [ngStyle]="placeLotOnGrid(lot)">
+        <vegas-property
+          *ngIf="lot.property as property"
+          [property]="property"
+          [address]="lot.address"
+        ></vegas-property>
+        <!-- roads -->
+        <div [class.avenue]="lot.roads.avenue"></div>
+        <div class="street" *ngIf="lot.roads.street"></div>
+        <!-- intersection -->
+        <div
+          class="intersection"
+          *ngIf="lot.intersection"
+          [class.intersection]="true"
+        >
+          <div class="taxi-stand" *ngIf="lot.intersection?.hasTaxiStand"></div>
+          <div class="limo" *ngIf="equals(limo, lot.address)">LIMO</div>
+        </div>
+      </div>
+      <!-- hotel -->
+      <div
+        *ngFor="let hotel of hotel$ | async"
+        [style.gridColumn]="hotel.avenue"
+        class="hotel-lot"
+      >
+        <div class="hotel">
+          <ng-container *ngIf="!hotel.opened; else hotelOpen">
+            {{ hotel.available }}
+            <button
+              *ngIf="hotel.available === HotelSize.Full"
+              (click)="onHotelUnavailable(hotel.avenue)"
+            >
+              Hotel Taken
+            </button>
+          </ng-container>
+          <ng-template #hotelOpen>
+            OPEN
+            {{ hotel.opened }}</ng-template
+          >
+        </div>
+        <div class="avenue"></div>
+      </div>
     </div>
-  </div>
+  </ng-container>
 </ng-container>

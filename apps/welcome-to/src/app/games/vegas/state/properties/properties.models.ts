@@ -17,8 +17,25 @@ export interface Property {
 }
 
 export interface Lot {
-  address: LotAddress
+  address: StreetAvenueAddress
   property?: Property
+  roads: {
+    /** below the lot */
+    street: RoadSegment
+    /** right of the lot */
+    avenue?: RoadSegment
+  }
+}
+
+export interface Hotel {
+  avenue: number
+  available: HotelSize
+  opened: HotelSize | null
+}
+
+export enum HotelSize {
+  Full='full',
+  Partial='partial'
 }
 
 export enum RedCarpet {
@@ -27,7 +44,21 @@ export enum RedCarpet {
   VIP = 'VIP',
 }
 
-export interface LotAddress {
+export interface StreetAvenueAddress {
   street: number
   avenue: number
+}
+
+export interface Intersection {
+  /** use the address that is above and left of the intersection */
+  address: StreetAvenueAddress
+  connectedRoads: RoadSegment[]
+  hasTaxiStand: boolean
+}
+
+export interface RoadSegment {
+  /** use the address that is above or left of the road */
+  address: StreetAvenueAddress
+  orientation: 'STREET' | 'AVENUE'
+  intersections: Intersection[]
 }
