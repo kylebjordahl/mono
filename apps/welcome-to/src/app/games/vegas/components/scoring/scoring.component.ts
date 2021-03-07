@@ -11,6 +11,7 @@ import { ImprovementArea } from '../../state/scoring/scoring.model'
 import {
   selectAvailableScoringBonuses,
   selectImprovements,
+  selectInaugurationTrackCount,
   selectScoringFeature,
   selectShowTracks,
 } from '../../state/scoring/scoring.selectors'
@@ -32,6 +33,7 @@ export class ScoringComponent implements OnInit {
   improvement$ = this.store.select(selectImprovements)
 
   bonusAvailable$ = this.store.select(selectAvailableScoringBonuses)
+  inaugurationCount$ = this.store.select(selectInaugurationTrackCount)
 
   show$ = this.store.select(selectShowTracks)
 
@@ -45,6 +47,10 @@ export class ScoringComponent implements OnInit {
 
   onImprove() {
     this.store.dispatch(makeImprovements({ area: this.selectedArea }))
+  }
+
+  doImprovement(area: ImprovementArea) {
+    this.store.dispatch(makeImprovements({ area }))
   }
 
   onInaugurationStep() {

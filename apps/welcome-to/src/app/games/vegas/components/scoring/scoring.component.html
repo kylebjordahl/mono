@@ -1,4 +1,19 @@
-<pre>{{ score$ | async }}</pre>
+<!-- <pre>{{ score$ | async }}</pre> -->
+
+<!-- inauguration track -->
+<ion-card class="inauguration">
+  <ion-card-header>Inauguration</ion-card-header>
+  <ion-card-content>
+    <button fxFlex (click)="onInaugurationStep()">Inauguration Step</button>
+    <button
+      fxFlex
+      *ngIf="bonusAvailable$ | async as bonusCount"
+      (click)="onUseInaugurationBonus()"
+    >
+      Use Inauguration Bonus ({{ bonusCount }})
+    </button>
+  </ion-card-content>
+</ion-card>
 
 <section class="improvements">
   Make Improvements<br />
@@ -14,64 +29,58 @@
     fxLayout="row wrap"
     fxLayoutAlign="start start"
   >
-    <div
-      class="improvement-track"
+    <ion-card
+      class="improvement-track ion-margin ion-padding"
       *ngFor="let area of ImprovementAreas"
       fxFlex="initial"
       fxLayout="column"
       fxLayoutAlign="start, center"
     >
-      {{ area }}:
-      <div
-        *ngFor="let i of improvements[area]"
-        class="improvement"
-        [class.marked]="i.marked"
-        fxFlex="initial"
-      >
-        {{ i.value }}
-      </div>
-    </div>
-    <ng-container *ngIf="show$ | async as shows">
-      <div fxLayout="column">
-        <div>Shows:</div>
-        <div fxLayout="row">
-          <div
-            *ngFor="let track of ['left', 'right']"
-            class="improvement-track"
-            fxFlex="initial"
-            fxLayout="column"
-          >
-            <div
-              *ngFor="let i of shows[track].shows"
-              class="improvement"
-              [class.marked]="i.marked"
-              fxFlex="initial"
-              [fxLayout]="track === 'left' ? 'row' : 'row-reverse'"
-              fxLayoutAlign="end"
-            >
-              <div
-                *ngIf="i.cash"
-                class="cash"
-                [class.circled]="shows[track].isStarted"
-              >
-                💸
-              </div>
-              <div>{{ i.value }}</div>
-            </div>
-          </div>
+      <ion-card-header class="ion-padding">
+        {{ area }}
+      </ion-card-header>
+      <ion-card-content fxLayout="column">
+        <div
+          *ngFor="let i of improvements[area]; index: idx"
+          class="improvement"
+          [class.marked]="i.marked"
+          (click)="doImprovement(area)"
+          fxFlex="initial"
+        >
+          {{ i.value }}
         </div>
-      </div>
+      </ion-card-content>
+    </ion-card>
+    <ng-container *ngIf="show$ | async as shows">
+      <ion-card class="ion-margin">
+        <ion-card-header class="ion-padding">Shows:</ion-card-header>
+        <ion-card-content fxLayout="row">
+          <ion-card
+            *ngFor="let track of ['left', 'right']"
+            class="improvement-track ion-margin ion-padding"
+          >
+            <ion-card-content fxLayout="column" class="ion-padding">
+              <div
+                *ngFor="let i of shows[track].shows"
+                class="improvement"
+                [class.marked]="i.marked"
+                fxFlex="initial"
+                [fxLayout]="track === 'left' ? 'row' : 'row-reverse'"
+                fxLayoutAlign="end"
+              >
+                <div
+                  *ngIf="i.cash"
+                  class="cash"
+                  [class.circled]="shows[track].isStarted"
+                >
+                  💸
+                </div>
+                <div>{{ i.value }}</div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-card-content>
+      </ion-card>
     </ng-container>
   </div>
-</section>
-
-<section class="inauguration" fxLayout="row">
-  <button fxFlex (click)="onInaugurationStep()">Inauguration Step</button>
-  <button
-    fxFlex
-    *ngIf="bonusAvailable$ | async as bonusCount"
-    (click)="onUseInaugurationBonus()"
-  >
-    Use Inauguration Bonus ({{ bonusCount }})
-  </button>
 </section>

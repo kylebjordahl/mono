@@ -221,6 +221,96 @@
         }
       }
     },
+    "ng-standby": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/ng-standby",
+      "sourceRoot": "apps/ng-standby/src",
+      "prefix": "welcome-to",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/ng-standby",
+            "index": "apps/ng-standby/src/index.html",
+            "main": "apps/ng-standby/src/main.ts",
+            "polyfills": "apps/ng-standby/src/polyfills.ts",
+            "tsConfig": "apps/ng-standby/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/ng-standby/src/favicon.ico",
+              "apps/ng-standby/src/assets"
+            ],
+            "styles": ["apps/ng-standby/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ng-standby/src/environments/environment.ts",
+                  "with": "apps/ng-standby/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ng-standby:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ng-standby:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ng-standby:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/ng-standby/src/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/ng-standby/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "welcome-to": {
       "projectType": "application",
       "schematics": {
@@ -230,7 +320,7 @@
       },
       "root": "apps/welcome-to",
       "sourceRoot": "apps/welcome-to/src",
-      "prefix": "welcome-to",
+      "prefix": "kylebjordahl",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -242,10 +332,19 @@
             "tsConfig": "apps/welcome-to/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "apps/welcome-to/src/favicon.ico",
-              "apps/welcome-to/src/assets"
+              "apps/welcome-to/src/assets",
+              {
+                "glob": "**/*.svg",
+                "input": "node_modules/ionicons/dist/ionicons/svg",
+                "output": "./svg"
+              }
             ],
-            "styles": ["apps/welcome-to/src/styles.scss"],
+            "styles": [
+              "apps/welcome-to/src/styles.scss",
+              {
+                "input": "apps/welcome-to/src/theme/variables.scss"
+              }
+            ],
             "scripts": []
           },
           "configurations": {
@@ -308,6 +407,87 @@
             "jestConfig": "apps/welcome-to/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "cap": {
+          "builder": "@nxtend/capacitor:cap",
+          "options": {
+            "cmd": "--help"
+          }
+        },
+        "add": {
+          "builder": "@nxtend/capacitor:cap",
+          "options": {
+            "cmd": "add",
+            "packageInstall": true
+          },
+          "configurations": {
+            "ios": {
+              "cmd": "add ios"
+            },
+            "android": {
+              "cmd": "add android"
+            }
+          }
+        },
+        "copy": {
+          "builder": "@nxtend/capacitor:cap",
+          "options": {
+            "cmd": "copy",
+            "packageInstall": false
+          },
+          "configurations": {
+            "ios": {
+              "cmd": "copy ios"
+            },
+            "android": {
+              "cmd": "copy android"
+            }
+          }
+        },
+        "open": {
+          "builder": "@nxtend/capacitor:cap",
+          "options": {
+            "cmd": "open",
+            "packageInstall": false
+          },
+          "configurations": {
+            "ios": {
+              "cmd": "open ios"
+            },
+            "android": {
+              "cmd": "open android"
+            }
+          }
+        },
+        "sync": {
+          "builder": "@nxtend/capacitor:cap",
+          "options": {
+            "cmd": "sync",
+            "packageInstall": true
+          },
+          "configurations": {
+            "ios": {
+              "cmd": "sync ios"
+            },
+            "android": {
+              "cmd": "sync android"
+            }
+          }
+        },
+        "update": {
+          "builder": "@nxtend/capacitor:cap",
+          "options": {
+            "cmd": "update",
+            "packageInstall": true
+          },
+          "configurations": {
+            "ios": {
+              "cmd": "update ios"
+            },
+            "android": {
+              "cmd": "update android"
+            }
+          }
         }
       }
     },
@@ -321,11 +501,11 @@
           "options": {
             "cypressConfig": "apps/welcome-to-e2e/cypress.json",
             "tsConfig": "apps/welcome-to-e2e/tsconfig.e2e.json",
-            "devServerTarget": "welcome-to:serve"
+            "devServerTarget": "ng-standby:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "welcome-to:serve:production"
+              "devServerTarget": "ng-standby:serve:production"
             }
           }
         },

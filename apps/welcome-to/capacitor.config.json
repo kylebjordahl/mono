@@ -1,0 +1,13 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "welcome-to",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "../../dist/apps/welcome-to",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

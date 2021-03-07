@@ -19,7 +19,12 @@
       "runner": "@nrwl/nx-cloud",
       "options": {
         "accessToken": "MTA5OTc3ODQtYTJhZi00NWI2LWExYmQtZjE4ODgxZmZiODQ5fHJlYWQtd3JpdGU=",
-        "cacheableOperations": ["build", "test", "lint", "e2e"],
+        "cacheableOperations": [
+          "build",
+          "test",
+          "lint",
+          "e2e"
+        ],
         "canTrackAnalytics": false,
         "showUsageWarnings": true
       }
@@ -31,7 +36,9 @@
     },
     "go-e2e": {
       "tags": [],
-      "implicitDependencies": ["go"]
+      "implicitDependencies": [
+        "go"
+      ]
     },
     "holiday-lights": {
       "tags": []
@@ -39,12 +46,17 @@
     "clicker-api": {
       "tags": []
     },
+    "ng-standby": {
+      "tags": []
+    },
     "welcome-to": {
       "tags": []
     },
     "welcome-to-e2e": {
       "tags": [],
-      "implicitDependencies": ["welcome-to"]
+      "implicitDependencies": [
+        "ng-standby"
+      ]
     }
   }
 }

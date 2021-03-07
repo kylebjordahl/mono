@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'welcome-to',
+  displayName: 'ng-standby',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -14,7 +14,7 @@ module.exports = {
       },
     },
   },
-  coverageDirectory: '../../coverage/apps/welcome-to',
+  coverageDirectory: '../../coverage/apps/ng-standby',
   snapshotSerializers: [
     'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
     'jest-preset-angular/build/AngularSnapshotSerializer.js',

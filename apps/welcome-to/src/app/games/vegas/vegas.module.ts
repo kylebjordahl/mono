@@ -14,12 +14,23 @@ import { localStorageSync } from 'ngrx-store-localstorage'
 import * as fromScoring from './state/scoring/scoring.reducer'
 import * as fromLimo from './state/limo/limo.reducer'
 import { ScoringComponent } from './components/scoring/scoring.component'
-import { ScoringEffects } from './state/scoring/scoring.effects';
+import { ScoringEffects } from './state/scoring/scoring.effects'
 import { VegasBlockComponent } from './components/vegas-block/vegas-block.component'
+import { VegasComponent } from './vegas.component'
+import { BrowserModule } from '@angular/platform-browser'
+import { IonicModule } from '@ionic/angular'
 
 @NgModule({
-  declarations: [VegasPropertyComponent, CityComponent, ScoringComponent, VegasBlockComponent],
+  declarations: [
+    VegasPropertyComponent,
+    CityComponent,
+    ScoringComponent,
+    VegasBlockComponent,
+    VegasComponent,
+  ],
   imports: [
+    BrowserModule,
+    IonicModule,
     FormsModule,
     FlexLayoutModule,
     CommonModule,
@@ -31,23 +42,20 @@ import { VegasBlockComponent } from './components/vegas-block/vegas-block.compon
       fromScoring.SCORING_FEATURE_KEY,
       fromScoring.scoringReducer
     ),
-    StoreModule.forFeature(
-      fromLimo.LIMO_FEATURE_KEY,
-      fromLimo.limoReducer
-    ),
+    StoreModule.forFeature(fromLimo.LIMO_FEATURE_KEY, fromLimo.limoReducer),
     EffectsModule.forFeature([PropertiesEffects, ScoringEffects]),
     StoreModule.forRoot(
       {},
       {
         metaReducers: !environment.production
           ? [
-              // localStorageSync({
-              //   keys: [
-              //     // fromProperties.PROPERTIES_FEATURE_KEY,
-              //     // fromScoring.SCORING_FEATURE_KEY,
-              //   ],
-              //   rehydrate: true,
-              // }),
+              localStorageSync({
+                keys: [
+                  fromProperties.PROPERTIES_FEATURE_KEY,
+                  fromScoring.SCORING_FEATURE_KEY,
+                ],
+                rehydrate: true,
+              }),
             ]
           : [],
         runtimeChecks: {
@@ -59,6 +67,6 @@ import { VegasBlockComponent } from './components/vegas-block/vegas-block.compon
     EffectsModule.forRoot([]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
-  exports: [CityComponent, ScoringComponent],
+  exports: [VegasComponent],
 })
 export class VegasModule {}

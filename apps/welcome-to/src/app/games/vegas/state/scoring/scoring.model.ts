@@ -38,6 +38,7 @@ export const ScoringData = {
   },
 
   debtPenalty: -20,
+  inaugurationTrackGroupings: [2, 2, 2, 2, 2, 3, 1],
   inaugurationTrackBonusesAvailable: (completedCount) =>
     [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1]
       .slice(0, completedCount)
