@@ -2,15 +2,22 @@ import { Component, OnInit } from '@angular/core'
 import { Store } from '@ngrx/store'
 import { map } from 'rxjs/operators'
 import {
+  cancelOfferBonusTypes,
   doInaugurationEvent,
   makeImprovements,
+  offerInaugurationBonusTypes,
   useInaugurationBonus,
 } from '../../state/scoring/scoring.actions'
-import { ImprovementArea } from '../../state/scoring/scoring.model'
+import {
+  ImprovementArea,
+  InaugurationBonusType,
+} from '../../state/scoring/scoring.model'
 
 import {
-  selectAvailableScoringBonuses,
+  selectAvailableBonuses,
+  selectCashAccounts,
   selectImprovements,
+  selectInaugurationTrack,
   selectInaugurationTrackCount,
   selectScoringFeature,
   selectShowTracks,
@@ -26,27 +33,22 @@ export class ScoringComponent implements OnInit {
   ImprovementAreas = Object.values(ImprovementArea)
   selectedArea = ImprovementArea.Inauguration
 
-  score$ = this.store
-    .select(selectScoringFeature)
-    .pipe(map((x) => JSON.stringify(x, undefined, 2)))
+  public BonusType = InaugurationBonusType
+
+  cash$ = this.store.select(selectCashAccounts)
 
   improvement$ = this.store.select(selectImprovements)
 
-  bonusAvailable$ = this.store.select(selectAvailableScoringBonuses)
+  bonusAvailable$ = this.store.select(selectAvailableBonuses)
   inaugurationCount$ = this.store.select(selectInaugurationTrackCount)
+  inaugurationTrack$ = this.store.select(selectInaugurationTrack)
 
   show$ = this.store.select(selectShowTracks)
 
-  constructor(private readonly store: Store) {
-    console.log(this.ImprovementAreas)
-  }
+  constructor(private readonly store: Store) {}
 
   ngOnInit(): void {
     //
-  }
-
-  onImprove() {
-    this.store.dispatch(makeImprovements({ area: this.selectedArea }))
   }
 
   doImprovement(area: ImprovementArea) {
@@ -56,7 +58,22 @@ export class ScoringComponent implements OnInit {
   onInaugurationStep() {
     this.store.dispatch(doInaugurationEvent())
   }
-  onUseInaugurationBonus() {
-    this.store.dispatch(useInaugurationBonus())
+
+  onUseInaugurationBonus(box: {
+    bonusAvailable: boolean
+    bonusUsed: InaugurationBonusType
+  }) {
+    if (box.bonusAvailable && !box.bonusUsed) {
+      // this is a stupidly bad way to do this...
+      this.store.dispatch(offerInaugurationBonusTypes())
+    }
+  }
+
+  cancelInaugurationBonus() {
+    this.store.dispatch(cancelOfferBonusTypes())
+  }
+
+  chooseInaugurationBonus(bonus: InaugurationBonusType) {
+    this.store.dispatch(useInaugurationBonus({ bonus }))
   }
 }

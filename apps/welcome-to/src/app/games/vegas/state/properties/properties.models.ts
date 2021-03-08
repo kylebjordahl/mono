@@ -34,8 +34,8 @@ export interface Hotel {
 }
 
 export enum HotelSize {
-  Full='full',
-  Partial='partial'
+  Full = 'full',
+  Partial = 'partial',
 }
 
 export enum RedCarpet {
@@ -50,6 +50,7 @@ export interface StreetAvenueAddress {
 }
 
 export interface Intersection {
+  id: number
   /** use the address that is above and left of the intersection */
   address: StreetAvenueAddress
   connectedRoads: RoadSegment[]
@@ -57,8 +58,9 @@ export interface Intersection {
 }
 
 export interface RoadSegment {
+  id: string
   /** use the address that is above or left of the road */
   address: StreetAvenueAddress
   orientation: 'STREET' | 'AVENUE'
-  intersections: Intersection[]
+  intersections: number[]
 }

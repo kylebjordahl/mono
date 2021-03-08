@@ -604,24 +604,34 @@ const street4 = [
 
 export const initialLots = [...street1, ...street2, ...street3, ...street4]
 
-const roads = {
+const roads: { street: RoadSegment[][]; avenue: RoadSegment[][] } = {
   street: Array(4)
     .fill(Array(11).fill({ orientation: 'STREET', intersections: [] }))
     .map((arr, s) =>
-      arr.map((x, a) => ({ ...x, address: {street: s + 1, avenue: a + 1}}))
-    ) as RoadSegment[][],
+      arr.map((x, a) => ({
+        ...x,
+        address: { street: s + 1, avenue: a + 1 },
+        id: `STREET:${s + 1},${a + 1}`,
+      }))
+    ),
   avenue: Array(11)
     .fill(Array(4).fill({ orientation: 'AVENUE', intersections: [] }))
     .map((arr, a) =>
-      arr.map((x, s) => ({ ...x, address:{street: s + 1, avenue: a + 1} }))
-    ) as RoadSegment[][],
+      arr.map((x, s) => ({
+        ...x,
+        address: { street: s + 1, avenue: a + 1 },
+        id: `AVENUE:${s + 1},${a + 1}`,
+      }))
+    ),
 }
 // take out the two missing roads
 roads.avenue[10][0] = undefined
 roads.avenue[10][3] = undefined
-roads.avenue[0][2]=undefined
+roads.avenue[0][2] = undefined
 
-export const allRoads = [...roads.street, ...roads.avenue].flat().filter(x=>x)
+export const allRoads = [...roads.street, ...roads.avenue]
+  .flat()
+  .filter((x) => x)
 
 const safeArrayGet = <T>(arr: T[], idx: number): T | undefined => {
   try {
@@ -638,6 +648,7 @@ export const intersections: Intersection[] = Array(44)
     const avenue = (idx % 11) + 1
     const street = Math.floor(idx / 11) + 1
     const intersection = {
+      id: idx,
       address: { street, avenue },
       connectedRoads: [
         // minus 1 because the data structure is 0 based
@@ -648,8 +659,8 @@ export const intersections: Intersection[] = Array(44)
       ].filter((x) => x),
       hasTaxiStand: idx % 2 === 0,
     }
-    intersection.connectedRoads.forEach((r) =>
-      r.intersections = R.uniq([...r.intersections,intersection])
+    intersection.connectedRoads.forEach(
+      (r) => (r.intersections = R.uniq([...r.intersections, intersection.id]))
     )
 
     return intersection

@@ -15,67 +15,128 @@
   position: relative;
   display: grid;
   border: 1px grey;
-  grid-template-columns: auto .4rem;
-  grid-template-rows: auto .4rem;
+  grid-template-columns: auto 0.4rem;
+  grid-template-rows: auto 0.4rem;
 
   vegas-property {
     display: block;
-    padding: .2rem;
+    padding: 0.2rem;
     position: relative;
     grid-row: 1;
     grid-column: 1;
   }
-
-
 }
 
-.intersection, .street, .avenue{
+.intersection,
+.street,
+.avenue {
   display: block;
-  background-color: #999;
-  position: relative
+  background-color: var(--ion-color-medium-shade);
+  position: relative;
 }
 
 .street {
+  z-index: 970;
   grid-row: 2;
   grid-column: 1;
 }
 
 .avenue {
+  z-index: 970;
   grid-row: 1;
   grid-column: 2;
 }
+
+.street,
+.avenue {
+  transition: background-color 700ms ease;
+  &.driveable {
+    background-color: var(--ion-color-secondary-shade);
+
+    transition: box-shadow 200ms ease;
+    &:hover {
+      box-shadow: 0 0 1rem var(--ion-color-secondary-shade);
+      background-color: var(--ion-color-secondary-tint);
+    }
+  }
+
+  &.visited {
+    background-color: var(--ion-color-tertiary-shade);
+  }
+
+  &.current-drive {
+    background-color: var(--ion-color-warning-shade);
+  }
+}
+
 .intersection {
+  z-index: 980;
   grid-row: 2;
   grid-column: 2;
 }
 
-.taxi-stand, .limo {
+.stop-light {
   display: block;
   box-sizing: border-box;
-  position:absolute;
-  top:0;
-  left:0;
-  right: 0;
-  bottom:0;
-  width: .6rem;
-  height: .6rem;
-  margin-left:-25%;
-  margin-top:-25%;
-  border: 2px solid green;
-  border-radius: .3rem;
-}
-
-.taxi-stand {
+  position: absolute;
+  top: 0;
+  left: 0;
   z-index: 990;
+  right: 0;
+  bottom: 0;
+  width: 0.6rem;
+  height: 0.6rem;
+  border: 2px solid green;
+  background-color: green;
+  border-radius: 50%;
+
+  margin-left: -25%;
+  margin-top: -25%;
+
+  .has-limo {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .limo {
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+  // margin-left: -75%;
+  // margin-top: -75%;
   z-index: 999;
+
+  color: --ion-text-color;
+
+  transition: color 200ms ease-in-out;
+
+  &.loading {
+    transition: all 0ms, 100ms, opacity 100ms ease-out;
+    opacity: 0;
+  }
+
+  &:hover {
+    color: var(--ion-color-secondary-tint);
+  }
+  &.driving,
+  &.driving:hover {
+    transition: top 700ms ease-in-out, left 700ms ease-in-out;
+    color: var(--ion-color-warning);
+    &.loading {
+      transition: top 0, left 0;
+    }
+  }
 }
 
 .hotel-lot {
   display: grid;
   grid-row: 5;
-  grid-template-columns: auto .4rem;
+  grid-template-columns: auto 0.4rem;
   grid-template-rows: auto;
 }

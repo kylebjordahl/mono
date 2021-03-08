@@ -10,17 +10,15 @@
 </div>
 <div class="building" fxFlex fxLayout="column" fxLayoutAlign="center center">
   <div class="show" *ngIf="property.canHaveShow">
-    <ng-container *ngIf="property.hasShow; else offerShow"
-      >🌟</ng-container
-    >
+    <ng-container *ngIf="property.hasShow; else offerShow">🌟</ng-container>
     <ng-template #offerShow>
       <ng-container *ngIf="!isOfferingShowTrack; else showTrackSelect">
         <button
-        [disabled]="property.casinoNumber === null"
-        (click)="isOfferingShowTrack=true"
-      >
-        ☆
-      </button>
+          [disabled]="property.casinoNumber === null"
+          (click)="isOfferingShowTrack = true"
+        >
+          ☆
+        </button>
       </ng-container>
     </ng-template>
   </div>
@@ -36,11 +34,15 @@
         (change)="onCasinoNumberAssign($event)"
     /></ng-container>
     <ng-template #offerBuild>
-      <button (click)="onPropertyBuild()">🛠</button>
+      <ion-icon name="hammer" (click)="onPropertyBuild()"></ion-icon>
     </ng-template>
   </div>
   <div class="red-carpet" *ngIf="property.redCarpet">
-    {{ property.redCarpet }}
+    <ng-container *ngIf="property.redCarpet === RedCarpet.Mob">💵</ng-container>
+    <ng-container *ngIf="property.redCarpet === RedCarpet.Fountain"
+      >⛲️</ng-container
+    >
+    <ng-container *ngIf="property.redCarpet === RedCarpet.VIP">🎩</ng-container>
   </div>
 </div>
 

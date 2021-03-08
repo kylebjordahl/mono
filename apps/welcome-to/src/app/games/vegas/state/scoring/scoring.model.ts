@@ -45,11 +45,11 @@ export const ScoringData = {
       .reduce((sum, curr) => sum + curr, 0),
 }
 
-// export enum InaugurationBonusType{
-//   EasyOpen="EasyOpen",
-//   FreeAction="FreeAction",
-//   ExtendedCasino="ExtendedCasino",
-// }
+export enum InaugurationBonusType {
+  EasyOpen = 'EasyOpen',
+  FreeAction = 'FreeAction',
+  ExtendedCasino = 'ExtendedCasino',
+}
 
 // export type InaugurationBonus = {
 //   type: InaugurationBonusType.EasyOpen,

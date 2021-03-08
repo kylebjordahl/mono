@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store'
 import {
   StreetAvenueAddress,
   Property,
+  RedCarpet,
 } from '../../state/properties/properties.models'
 
 import * as PropertyActions from '../../state/properties/properties.actions'
@@ -13,13 +14,14 @@ import * as PropertyActions from '../../state/properties/properties.actions'
   styleUrls: ['./vegas-property.component.scss'],
 })
 export class VegasPropertyComponent {
+  public RedCarpet = RedCarpet
   @Input()
   property: Property
 
   @Input()
   address: StreetAvenueAddress
 
-  isOfferingShowTrack=false
+  isOfferingShowTrack = false
 
   constructor(private readonly store: Store) {}
 
@@ -55,8 +57,10 @@ export class VegasPropertyComponent {
     )
   }
 
-  onOpenShow(track: "LEFT" | "RIGHT"): void {
-    this.store.dispatch(PropertyActions.openShow({ address: this.address, showTrack:track }))
+  onOpenShow(track: 'LEFT' | 'RIGHT'): void {
+    this.store.dispatch(
+      PropertyActions.openShow({ address: this.address, showTrack: track })
+    )
     this.isOfferingShowTrack = false
   }
 }

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store'
-import { ImprovementArea } from './scoring.model'
+import { ImprovementArea, InaugurationBonusType } from './scoring.model'
 
 export const makeImprovements = createAction(
   '[Scoring] Make Improvements',
@@ -7,10 +7,18 @@ export const makeImprovements = createAction(
 )
 
 export const doInaugurationEvent = createAction('[Scoring] Inauguration Event')
-// PROPS TBD
+
+export const offerInaugurationBonusTypes = createAction(
+  '[Scoring] Offer Inauguration Bonus Types'
+)
+
+export const cancelOfferBonusTypes = createAction(
+  '[Scoring] Cancel Offer Inauguration Bonus Types'
+)
+
 export const useInaugurationBonus = createAction(
-  '[Scoring] Use Inauguration Bonus'
-  // props<unknown>()
+  '[Scoring] Use Inauguration Bonus',
+  props<{ bonus: InaugurationBonusType }>()
 )
 
 export const addDebt = createAction('[Scoring] Add Debt')

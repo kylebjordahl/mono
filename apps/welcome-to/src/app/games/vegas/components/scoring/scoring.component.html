@@ -1,29 +1,73 @@
 <!-- <pre>{{ score$ | async }}</pre> -->
 
 <!-- inauguration track -->
-<ion-card class="inauguration">
-  <ion-card-header>Inauguration</ion-card-header>
-  <ion-card-content>
-    <button fxFlex (click)="onInaugurationStep()">Inauguration Step</button>
+<ion-card class="inauguration ion-margin ion-padding">
+  <ion-card-header class="ion-margin ion-padding">Inauguration</ion-card-header>
+  <ion-card-content class="ion-margin ion-padding" fxLayout="row">
+    <ng-container *ngIf="inaugurationTrack$ | async as track">
+      <ion-card
+        class="ion-margin ion-padding bonus-card"
+        *ngFor="let box of track"
+        fxLayout="row"
+      >
+        <ion-card-content
+          class="bonus-group ion-margin ion-padding"
+          [class.available]="box.bonusAvailable"
+          [class.used]="box.bonusUsed"
+          fxLayout="row"
+          (click)="onUseInaugurationBonus(box)"
+        >
+          <ng-container *ngIf="!box.isOffering; else offerBonuses">
+            <ng-container *ngFor="let check of box.checkboxes">
+              <ng-container *ngIf="check; else unchecked">
+                <ion-icon name="checkmark-circle"></ion-icon>
+              </ng-container>
+              <ng-template #unchecked>
+                <ion-icon
+                  name="ellipse-outline"
+                  (click)="onInaugurationStep()"
+                ></ion-icon>
+              </ng-template>
+            </ng-container>
+          </ng-container>
+          <ng-template #offerBonuses>
+            <div (click)="chooseInaugurationBonus(BonusType.EasyOpen)">±</div>
+            <div (click)="chooseInaugurationBonus(BonusType.FreeAction)">
+              🔥
+            </div>
+            <div (click)="chooseInaugurationBonus(BonusType.ExtendedCasino)">
+              ↔
+            </div>
+            <div (click)="cancelInaugurationBonus()">ⓧ</div>
+          </ng-template>
+        </ion-card-content>
+        <div
+          class="cash"
+          [class.circled]="box.bonusUsed === BonusType.ExtendedCasino"
+        >
+          💸
+        </div>
+      </ion-card>
+    </ng-container>
+    <!-- <button fxFlex (click)="onInaugurationStep()">Inauguration Step</button>
     <button
       fxFlex
       *ngIf="bonusAvailable$ | async as bonusCount"
       (click)="onUseInaugurationBonus()"
     >
       Use Inauguration Bonus ({{ bonusCount }})
-    </button>
+    </button> -->
+  </ion-card-content>
+</ion-card>
+
+<ion-card class="accounts ion-margin ion-padding" *ngIf="cash$ | async as cash">
+  <ion-card-header>Cash Accounting</ion-card-header>
+  <ion-card-content>
+    Credits: {{ cash.credits }} Debts: {{ cash.debts }}
   </ion-card-content>
 </ion-card>
 
 <section class="improvements">
-  Make Improvements<br />
-  <select [(ngModel)]="selectedArea" name="selectedArea">
-    <option *ngFor="let area of ImprovementAreas" [value]="area">
-      {{ area }}
-    </option></select
-  ><br />
-  <button (click)="onImprove()">Improve!</button>
-
   <div
     *ngIf="improvement$ | async as improvements"
     fxLayout="row wrap"
@@ -39,30 +83,43 @@
       <ion-card-header class="ion-padding">
         {{ area }}
       </ion-card-header>
-      <ion-card-content fxLayout="column">
+      <ion-card-content
+        fxLayout="column"
+        fxLayoutGap="0.1rem"
+        fxLayoutAlign="start stretch"
+      >
         <div
-          *ngFor="let i of improvements[area]; index: idx"
+          *ngFor="let i of improvements[area]; index as idx"
           class="improvement"
-          [class.marked]="i.marked"
+          [class.marked]="i.isMarked"
+          [class.improvable]="i.isImprovable"
           (click)="doImprovement(area)"
           fxFlex="initial"
+          fxLayoutAlign="center"
         >
           {{ i.value }}
         </div>
       </ion-card-content>
     </ion-card>
     <ng-container *ngIf="show$ | async as shows">
-      <ion-card class="ion-margin">
+      <ion-card
+        class="ion-margin shows"
+        fxLayout="column"
+        fxLayoutAlign="start, center"
+      >
         <ion-card-header class="ion-padding">Shows:</ion-card-header>
         <ion-card-content fxLayout="row">
           <ion-card
             *ngFor="let track of ['left', 'right']"
-            class="improvement-track ion-margin ion-padding"
+            class="show-track ion-margin ion-padding"
+            fxFlex="initial"
+            fxLayout="column"
+            fxLayoutAlign="start, center"
           >
             <ion-card-content fxLayout="column" class="ion-padding">
               <div
                 *ngFor="let i of shows[track].shows"
-                class="improvement"
+                class="show"
                 [class.marked]="i.marked"
                 fxFlex="initial"
                 [fxLayout]="track === 'left' ? 'row' : 'row-reverse'"
@@ -75,7 +132,9 @@
                 >
                   💸
                 </div>
-                <div>{{ i.value }}</div>
+                <div class="show-score" fxLayoutAlign="center">
+                  {{ i.value }}
+                </div>
               </div>
             </ion-card-content>
           </ion-card>

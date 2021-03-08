@@ -1,4 +1,4 @@
-<ng-container *ngIf="currentLimo$ | async as limo">
+<ng-container *ngIf="limoAddress$ | async as limo">
   <ng-container *ngIf="lots$ | async as lots">
     <div class="grid">
       <!-- lots -->
@@ -9,16 +9,37 @@
           [address]="lot.address"
         ></vegas-property>
         <!-- roads -->
-        <div [class.avenue]="lot.roads.avenue"></div>
-        <div class="street" *ngIf="lot.roads.street"></div>
+        <div
+          *ngIf="lot.roads.avenue"
+          class="avenue"
+          [class.driveable]="lot.roads.avenue.driveable"
+          [class.visited]="lot.roads.avenue.visited"
+          [class.current-drive]="lot.roads.avenue.onCurrentDrive"
+          (click)="onDriveRoad(lot.roads.avenue)"
+        ></div>
+        <div
+          *ngIf="lot.roads.street"
+          class="street"
+          [class.driveable]="lot.roads.street.driveable"
+          [class.visited]="lot.roads.street.visited"
+          [class.current-drive]="lot.roads.street.onCurrentDrive"
+          (click)="onDriveRoad(lot.roads.street)"
+        ></div>
         <!-- intersection -->
         <div
           class="intersection"
           *ngIf="lot.intersection"
+          [intersection]="equals(limo, lot.intersection?.address)"
           [class.intersection]="true"
+          [class.has-limo]="equals(limo, lot.intersection.address)"
         >
-          <div class="taxi-stand" *ngIf="lot.intersection?.hasTaxiStand"></div>
-          <div class="limo" *ngIf="equals(limo, lot.address)">LIMO</div>
+          <div class="stop-light" *ngIf="lot.intersection?.hasTaxiStand">
+            <div
+              *ngIf="equals(limo, lot.intersection.address)"
+              #limoPosition
+              class="has-limo"
+            ></div>
+          </div>
         </div>
       </div>
       <!-- hotel -->
@@ -46,4 +67,16 @@
       </div>
     </div>
   </ng-container>
+
+  <div
+    class="limo"
+    #limo
+    (click)="limoClick()"
+    [class.driving]="isDrivingLimo$ | async"
+    [class.loading]="!(limoPosition$ | async)"
+    [style.left]="(limoPosition$ | async)?.x + 'px'"
+    [style.top]="(limoPosition$ | async)?.y + 'px'"
+  >
+    <ion-icon name="car-sport"></ion-icon>
+  </div>
 </ng-container>

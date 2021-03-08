@@ -19,6 +19,7 @@ import { VegasBlockComponent } from './components/vegas-block/vegas-block.compon
 import { VegasComponent } from './vegas.component'
 import { BrowserModule } from '@angular/platform-browser'
 import { IonicModule } from '@ionic/angular'
+import { IntersectionDirective } from './components/city/intersection.directive'
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { IonicModule } from '@ionic/angular'
     ScoringComponent,
     VegasBlockComponent,
     VegasComponent,
+    IntersectionDirective,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +55,7 @@ import { IonicModule } from '@ionic/angular'
                 keys: [
                   fromProperties.PROPERTIES_FEATURE_KEY,
                   fromScoring.SCORING_FEATURE_KEY,
+                  fromLimo.LIMO_FEATURE_KEY,
                 ],
                 rehydrate: true,
               }),

@@ -1,7 +1,11 @@
 import { createReducer, on, State } from '@ngrx/store'
 import * as GameAction from '../game/game.actions'
 import * as PropertyAction from '../properties/properties.actions'
-import { ImprovementArea, ScoringData } from './scoring.model'
+import {
+  ImprovementArea,
+  InaugurationBonusType,
+  ScoringData,
+} from './scoring.model'
 import * as ScoringAction from '../scoring/scoring.actions'
 import * as R from 'ramda'
 
@@ -13,7 +17,8 @@ export interface ScoreState {
 
   /** max is 14 */
   inaugurationTrack: number
-  inaugurationBonusesUsed: number
+  inaugurationBonusesUsed: InaugurationBonusType[]
+  isOfferingInaugurationBonusType: boolean
 
   inaugurationRank: number
   wasLastInauguration: boolean
@@ -41,7 +46,7 @@ export interface ScoreState {
     /** max is 3 */
     [ImprovementArea.LimoPenalty]: number
   }
-  shows:{
+  shows: {
     /** max is 6 */
     left: number
     /** max is 6 */
@@ -63,13 +68,14 @@ export interface PartialScoringState {
 export const initialState: ScoreState = {
   debts: 0,
   credits: 1,
-  inaugurationTrack: 0,
-  inaugurationBonusesUsed: 0,
+  inaugurationTrack: 3,
+  inaugurationBonusesUsed: [],
+  isOfferingInaugurationBonusType: false,
   inaugurationRank: null,
   wasLastInauguration: null,
-  shows:{
+  shows: {
     left: 0,
-    right:0,
+    right: 0,
   },
   improvements: {
     [ImprovementArea.Inauguration]: 0,
@@ -109,9 +115,22 @@ export const scoringReducer = createReducer(
     ...state,
     inaugurationTrack: Math.min(14, state.inaugurationTrack + 1),
   })),
-  on(ScoringAction.useInaugurationBonus, (state) => ({
+  on(ScoringAction.offerInaugurationBonusTypes, (state) => {
+    return {
+      ...state,
+      isOfferingInaugurationBonusType: true,
+    }
+  }),
+  on(ScoringAction.cancelOfferBonusTypes, (state) => {
+    return {
+      ...state,
+      isOfferingInaugurationBonusType: false,
+    }
+  }),
+  on(ScoringAction.useInaugurationBonus, (state, { bonus }) => ({
     ...state,
-    inaugurationBonusesUsed: state.inaugurationBonusesUsed + 1,
+    inaugurationBonusesUsed: state.inaugurationBonusesUsed.concat([bonus]),
+    isOfferingInaugurationBonusType: false,
   })),
   on(ScoringAction.makeImprovements, (state, { area }) => {
     const lens = R.lensPath(['improvements', area])
@@ -126,24 +145,30 @@ export const scoringReducer = createReducer(
       state
     ) as ScoreState
   }),
-  on(PropertyAction.openShow, (state, action)=>{
-    const track =action.showTrack.toLocaleLowerCase()
-    const lens =R.lensPath(['shows', track])
+  on(PropertyAction.openShow, (state, action) => {
+    const track = action.showTrack.toLocaleLowerCase()
+    const lens = R.lensPath(['shows', track])
     const newState = R.over(
       lens,
-      (current:number)=>current+1,
+      (current: number) => current + 1,
       state
     ) as ScoreState
 
     // process debts
-    const currentShowCount = R.view(lens,newState) as number
-    if(currentShowCount===1){
+    const currentShowCount = R.view(lens, newState) as number
+    if (currentShowCount === 1) {
       // always add two debts for first show on track,
       newState.debts += 2
     } else {
-      if(track==='left' && (currentShowCount == 5 || currentShowCount == 6)){
+      if (
+        track === 'left' &&
+        (currentShowCount == 5 || currentShowCount == 6)
+      ) {
         newState.credits += 1
-      } else if(track==='right' && (currentShowCount == 3 || currentShowCount == 4)){
+      } else if (
+        track === 'right' &&
+        (currentShowCount == 3 || currentShowCount == 4)
+      ) {
         newState.credits += 1
       }
     }

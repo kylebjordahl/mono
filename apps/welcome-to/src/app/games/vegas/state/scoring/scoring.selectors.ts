@@ -18,9 +18,10 @@ export const selectImprovements = createSelector(
   ({ improvements }) =>
     R.mapObjIndexed((improvementCount, area) => {
       const mapped = (ScoringData.improvements[area] as unknown[]).map(
-        (value, idx) => ({
+        (value, idx, arr) => ({
           value,
-          marked: idx < improvementCount,
+          isMarked: idx < improvementCount,
+          isImprovable: idx < arr.length - 1,
         })
       )
       return mapped
@@ -32,11 +33,11 @@ export const selectInaugurationTrackCount = createSelector(
   ({ inaugurationTrack }) => inaugurationTrack
 )
 
-export const selectAvailableScoringBonuses = createSelector(
+export const selectAvailableBonuses = createSelector(
   selectScoringFeature,
   ({ inaugurationBonusesUsed, inaugurationTrack }) =>
     ScoringData.inaugurationTrackBonusesAvailable(inaugurationTrack) -
-    inaugurationBonusesUsed
+    inaugurationBonusesUsed.length
 )
 
 export const selectShowTracks = createSelector(
@@ -52,4 +53,46 @@ export const selectShowTracks = createSelector(
       )
       return { shows: mapped, isStarted: mapped.some((m) => m.marked) }
     }, shows)
+)
+
+export const selectInaugurationTrack = createSelector(
+  selectScoringFeature,
+  ({
+    inaugurationTrack,
+    inaugurationBonusesUsed,
+    isOfferingInaugurationBonusType,
+  }) => {
+    let remainingChecks = inaugurationTrack
+    let isOfferingTracker = isOfferingInaugurationBonusType
+    return ScoringData.inaugurationTrackGroupings.map((count, idx) => {
+      const checkboxes = Array(count)
+        .fill(false)
+        .map(() => {
+          remainingChecks -= 1
+          return remainingChecks >= 0
+        })
+      const bonusAvailable = checkboxes.every((c) => c)
+      const bonusUsed = inaugurationBonusesUsed[idx] ?? null
+      let isOffering = false
+      if (isOfferingTracker && bonusAvailable && !bonusUsed) {
+        isOfferingTracker = false
+        isOffering = true
+      }
+
+      return {
+        checkboxes,
+        bonusAvailable,
+        bonusUsed,
+        isOffering,
+      }
+    })
+  }
+)
+
+export const selectCashAccounts = createSelector(
+  selectScoringFeature,
+  (state) => ({
+    credits: state.credits,
+    debts: state.debts,
+  })
 )
