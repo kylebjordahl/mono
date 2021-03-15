@@ -637,7 +637,7 @@ const safeArrayGet = <T>(arr: T[], idx: number): T | undefined => {
   try {
     return arr[idx]
   } catch {
-    return
+    return undefined
   }
 }
 

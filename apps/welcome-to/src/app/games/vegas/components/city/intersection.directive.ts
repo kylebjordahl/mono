@@ -1,6 +1,8 @@
-import { Directive } from '@angular/core'
+import { Directive, Input } from '@angular/core'
 
 @Directive({
-  selector: '[intersection]',
+  selector: 'intersection',
 })
-export class IntersectionDirective {}
+export class IntersectionDirective {
+  @Input() intersection: boolean
+}

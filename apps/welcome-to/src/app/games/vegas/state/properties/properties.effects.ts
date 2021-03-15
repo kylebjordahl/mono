@@ -6,7 +6,7 @@ import { map, switchMap, withLatestFrom } from 'rxjs/operators'
 import * as PropertiesActions from './properties.actions'
 import * as fromProperties from './properties.selectors'
 import * as R from 'ramda'
-import {  from, of } from 'rxjs'
+import { from, of } from 'rxjs'
 
 @Injectable()
 export class PropertiesEffects {
@@ -16,11 +16,12 @@ export class PropertiesEffects {
       withLatestFrom(this.store.select(fromProperties.selectLots)),
       switchMap(([{ address, casinoNumber }, lots]) => {
         // casino number constraints
-        const emptyResponse = of(PropertiesActions.updateProperty({
-          address,
-          property: {
-          },
-        }))
+        const emptyResponse = of(
+          PropertiesActions.updateProperty({
+            address,
+            property: {},
+          })
+        )
 
         if (casinoNumber > 17 || casinoNumber < 0) {
           return emptyResponse
@@ -114,12 +115,14 @@ export class PropertiesEffects {
         }
 
         // check for hotel completion
-        const thisAvenue = lots.filter(l=>l.address.avenue===address.avenue)
+        const thisAvenue = lots.filter(
+          (l) => l.address.avenue === address.avenue && l.property
+        )
 
-        if(thisAvenue.every(l=>l.property?.casinoNumber || R.equals(l, lot))){
-          updates.push(
-            PropertiesActions.openHotel({avenue: address.avenue})
-          )
+        if (
+          thisAvenue.every((l) => l.property?.casinoNumber || R.equals(l, lot))
+        ) {
+          updates.push(PropertiesActions.openHotel({ avenue: address.avenue }))
         }
 
         return from(updates)

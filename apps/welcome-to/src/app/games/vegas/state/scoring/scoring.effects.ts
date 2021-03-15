@@ -5,9 +5,8 @@ import { Store } from '@ngrx/store'
 import { map, withLatestFrom } from 'rxjs/operators'
 
 import { doInaugurationEvent } from './scoring.actions'
-import { selectInaugurationTrackCount,  } from './scoring.selectors'
+import { selectInaugurationTrackCount } from './scoring.selectors'
 import { endGame } from '../game/game.actions'
-
 
 @Injectable()
 export class ScoringEffects {
@@ -20,6 +19,7 @@ export class ScoringEffects {
           console.log('ENDGAME!')
           return endGame()
         }
+        return undefined
       })
     )
   )
