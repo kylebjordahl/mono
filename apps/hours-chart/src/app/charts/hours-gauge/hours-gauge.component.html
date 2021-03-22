@@ -1,0 +1,83 @@
+<ng-container *ngIf="data$ | async as data; else loading">
+  <ng-container *ngIf="target$ | async as target; else loading">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ngx-charts-gauge
+            [view]="view"
+            [scheme]="colorScheme"
+            [results]="data"
+            [legend]="false"
+            [legendPosition]="legendPosition"
+            [showText]="false"
+            [max]="(max$ | async) || 100"
+            (select)="onSelect($event)"
+            (activate)="onActivate($event)"
+            (deactivate)="onDeactivate($event)"
+          >
+          </ngx-charts-gauge>
+        </ion-col>
+        <ion-col>
+          <ion-card color="secondary">
+            <ion-card-header>
+              <ion-card-title>
+                JN
+                <ion-text color="dark">
+                  {{ data | projectValue: toggl.JN_PROJECT | hours }}
+                </ion-text>
+              </ion-card-title>
+              <ion-card-subtitle *ngIf="target$ | async as target">
+                <ion-text
+                  color="warning"
+                  *ngIf="(data | projectValue: toggl.JN_PROJECT) < target"
+                  >short by
+                  {{
+                    target - (data | projectValue: toggl.JN_PROJECT) | hours
+                  }}</ion-text
+                >
+              </ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+          <ion-card color="primary">
+            <ion-card-header>
+              <ion-card-title>
+                Ohm
+                <ion-text color="dark">
+                  {{ data | projectValue: toggl.OHM_PROJECT | hours }}
+                </ion-text>
+              </ion-card-title>
+              <ion-card-subtitle *ngIf="target$ | async as target">
+                <ion-text
+                  color="warning"
+                  *ngIf="(data | projectValue: toggl.OHM_PROJECT) < target"
+                  >short by
+                  {{
+                    target - (data | projectValue: toggl.OHM_PROJECT) | hours
+                  }}</ion-text
+                >
+              </ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+          <ion-card color="tertiary">
+            <ion-card-header>
+              <ion-card-title>
+                Target
+                <ion-text color="dark">
+                  {{ target$ | async | hours }}
+                </ion-text>
+              </ion-card-title>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+</ng-container>
+
+<ng-template #loading>
+  <ion-grid>
+    <ion-row
+      ><ion-col> <ion-spinner></ion-spinner> </ion-col
+    ></ion-row>
+  </ion-grid>
+</ng-template>

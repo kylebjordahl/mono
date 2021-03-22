@@ -1,0 +1,12 @@
+{
+  "/toggl": {
+    "target": "https://api.track.toggl.com/api/v8",
+    "pathRewrite": {
+      "^/toggl": ""
+    },
+    "secure": true,
+    "ws": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

@@ -516,6 +516,105 @@
           }
         }
       }
+    },
+    "hours-chart": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/hours-chart",
+      "sourceRoot": "apps/hours-chart/src",
+      "prefix": "kylebjordahl",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/hours-chart",
+            "index": "apps/hours-chart/src/index.html",
+            "main": "apps/hours-chart/src/main.ts",
+            "polyfills": "apps/hours-chart/src/polyfills.ts",
+            "tsConfig": "apps/hours-chart/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/hours-chart/src/assets",
+              {
+                "glob": "**/*.svg",
+                "input": "node_modules/ionicons/dist/ionicons/svg",
+                "output": "./svg"
+              }
+            ],
+            "styles": [
+              "apps/hours-chart/src/styles.scss",
+              {
+                "input": "apps/hours-chart/src/theme/variables.scss"
+              }
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/hours-chart/src/environments/environment.ts",
+                  "with": "apps/hours-chart/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "hours-chart:build",
+            "proxyConfig": "apps/hours-chart/proxy.conf.json",
+            "port": 5953,
+            "host": "192.168.7.71"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "hours-chart:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "hours-chart:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/hours-chart/tsconfig.app.json",
+              "apps/hours-chart/tsconfig.editor.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/hours-chart/**/*"]
+          }
+        }
+      }
     }
   },
   "cli": {

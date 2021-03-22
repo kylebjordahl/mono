@@ -1,0 +1,7 @@
+{
+  "name": "hours-chart",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

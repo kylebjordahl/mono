@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Commitments </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Commitments</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <kb-hours-gauge scale="month"></kb-hours-gauge>
+      </ion-col>
+      <ion-col>
+        <kb-hours-gauge scale="day"></kb-hours-gauge>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ng-template #loading>
+  <ion-spinner></ion-spinner>
+</ng-template>
