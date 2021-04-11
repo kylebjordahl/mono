@@ -14,13 +14,15 @@ export class Tab2Page {
   constructor(private gun: GunService, private changeRef: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.gun.db.get('hosts').open((data) => {
-      console.log('hosts', data)
-      Object.entries(data)
-        .filter((id, host) => !!host)
-        .map((entry) => this.hosts.set(...entry))
-      this.changeRef.detectChanges()
-    })
+    this.gun.db
+      .get('hosts')
+      .map()
+      .open((data) => {
+        console.log('hosts', data)
+        const host = (data as unknown) as Host
+        this.hosts.set(host.key, host)
+        this.changeRef.detectChanges()
+      })
   }
 
   ngOnDestroy() {

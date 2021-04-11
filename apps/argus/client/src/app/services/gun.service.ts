@@ -5,7 +5,18 @@ import { Observable, ReplaySubject } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class GunService {
-  readonly db = Gun<GunRoot>(window.location.origin + '/gun')
+  private gun = Gun<Record<string, GunRoot>>(window.location.origin + '/gun')
+  private _projectId: string = 'test'
+
+  public get projectId(): string {
+    return this._projectId
+  }
+
+  public get db() {
+    if (this._projectId) {
+      return this.gun.get(this._projectId)
+    }
+  }
 
   private _user: ReturnType<GunDb['user']> & { is: boolean }
 
@@ -24,7 +35,6 @@ export class GunService {
       this._user$.next(this._user.is as any)
     }) as any
     console.log('Attempting gun @', window.location.origin + '/gun')
-
     window['gun'] = this.db
   }
 

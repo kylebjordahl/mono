@@ -737,7 +737,7 @@
           "builder": "@nrwl/node:execute",
           "options": {
             "buildTarget": "argus-scanner:build",
-            "args": ["/Users/kyle/Desktop/scan-test"]
+            "args": ["-p", "test", "-r", "/Users/kyle/Desktop/scan-test"]
           }
         },
         "lint": {

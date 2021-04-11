@@ -27,6 +27,12 @@
               *ngFor="let fileInstance of root.value.files | keyvalue"
             >
               <ion-item *ngIf="fileInstance.value">
+                <ion-img
+                  slot="end"
+                  *ngIf="fileInstance.value.thumbnailBase64"
+                  [src]="'data:image/jpeg;base64,'+fileInstance.value.thumbnailBase64"
+                >
+                </ion-img>
                 <ion-label> File {{ fileInstance.value.address }} </ion-label>
               </ion-item>
             </ng-container>
