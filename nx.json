@@ -36,20 +36,30 @@
     "holiday-lights": {
       "tags": []
     },
-    "clicker-api": {
-      "tags": []
-    },
-    "ng-standby": {
-      "tags": []
-    },
     "welcome-to": {
       "tags": []
     },
     "welcome-to-e2e": {
       "tags": [],
-      "implicitDependencies": ["ng-standby"]
+      "implicitDependencies": ["welcome-to"]
     },
     "hours-chart": {
+      "tags": []
+    },
+    "argus-client": {
+      "tags": []
+    },
+    "argus/client-e2e": {
+      "tags": [],
+      "implicitDependencies": ["argus-client"]
+    },
+    "argus-domain": {
+      "tags": []
+    },
+    "argus-scanner": {
+      "tags": []
+    },
+    "argus-watchtower": {
       "tags": []
     }
   }

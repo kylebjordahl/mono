@@ -1,0 +1,13 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "argus/client",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "../../../dist/apps/argus/client",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

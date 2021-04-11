@@ -1,6 +1,6 @@
 module.exports = {
-  displayName: 'welcome-to',
-  preset: '../../jest.preset.js',
+  displayName: 'argus-client',
+  preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
@@ -14,7 +14,7 @@ module.exports = {
       },
     },
   },
-  coverageDirectory: '../../coverage/apps/welcome-to',
+  coverageDirectory: '../../../coverage/apps/argus-client',
   snapshotSerializers: [
     'jest-preset-angular/build/AngularNoNgAttributesSnapshotSerializer.js',
     'jest-preset-angular/build/AngularSnapshotSerializer.js',

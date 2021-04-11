@@ -1,0 +1,7 @@
+{
+  "/gun": {
+    "target": "http://localhost:34567",
+    "secure": true,
+    "ws": true
+  }
+}

@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Hosts </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Hosts</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ng-container *ngFor="let host of hosts | keyvalue">
+    <ion-list>
+      <ion-card *ngFor="let root of host.value.roots | keyvalue">
+        <ion-card-header>
+          <ion-card-title> Host {{ host.value.key }} </ion-card-title>
+          <ion-card-subtitle>
+            Root {{ root.value.basePath }}
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+            <ion-list-header>Files</ion-list-header>
+            <ng-container
+              *ngFor="let fileInstance of root.value.files | keyvalue"
+            >
+              <ion-item *ngIf="fileInstance.value">
+                <ion-label> File {{ fileInstance.value.address }} </ion-label>
+              </ion-item>
+            </ng-container>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+  </ng-container>
+</ion-content>
