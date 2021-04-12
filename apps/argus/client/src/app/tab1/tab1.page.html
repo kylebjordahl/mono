@@ -1,21 +1,36 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Tab 1 </ion-title>
+    <ion-title> Assets </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">Assets</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <ion-list>
-    <ng-container *ngFor="let version of versions | keyvalue">
-      <ion-item>
-        <ion-label>{{ version.value.key }}</ion-label>
-      </ion-item>
-    </ng-container>
-  </ion-list>
+  <ion-card *ngFor="let asset of assets | keyvalue">
+    <ion-card-header>
+      <ion-card-title>{{asset.value.stem}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-list-header>Versions</ion-list-header>
+        <ion-item *ngFor="let version of asset.value.versions | keyvalue">
+          <ion-label
+            >{{ version.value.versionTag || '-- missing version --'
+            }}</ion-label
+          >
+
+          <ion-img
+            slot="end"
+            *ngIf="getVersionThumb(version.value) as imageData"
+            [src]="imageData"
+          ></ion-img>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

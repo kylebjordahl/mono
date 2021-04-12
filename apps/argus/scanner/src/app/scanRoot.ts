@@ -41,7 +41,7 @@ export async function scanRoot(arg: {
     })
     file.get('roots').set(root)
     // make a thumbnail if its an image!
-    const existingThumbnail = await file.get('thumbnailBase64').then()
+    const existingThumbnail = false //await file.get('thumbnailBase64').then()
     if (!existingThumbnail) {
       console.log(`Creating thumbnail for [${path}]`)
       const thumbnail = ((await imageThumbnail(path, {

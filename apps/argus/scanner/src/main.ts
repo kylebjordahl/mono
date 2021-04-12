@@ -5,6 +5,7 @@ import { machineIdSync } from 'node-machine-id'
 import { program } from 'commander'
 import { getArgusDb } from './app/argus.db'
 import { scanRoot } from './app/scanRoot'
+import { startVersionMatcher } from './app/versionMatcher'
 
 program
   .requiredOption('-p, --project <projectId>', 'project ID')
@@ -30,6 +31,7 @@ program.parse()
   const root = db.get('roots').get(rootPath).put({ basePath: rootPath })
   host.get('roots').set(root)
 
+  startVersionMatcher({ db })
   const watcher = await scanRoot({ root, db })
 
   process.on('beforeExit', async () => {

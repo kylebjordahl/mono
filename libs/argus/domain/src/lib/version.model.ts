@@ -1,6 +1,11 @@
+import { Asset } from './asset.model'
 import type { FileInstance } from './fileInstance.model'
 
 export interface Version {
   key: string
-  files: Record<string, FileInstance>
+  versionTag: string
+  frameIndex: number
+
+  asset: Asset
+  files: FileInstance[]
 }

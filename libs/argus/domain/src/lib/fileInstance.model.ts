@@ -7,6 +7,7 @@ export interface FileInstance {
   createdAt: string
   modifiedAt: string
   thumbnailBase64: string
+  proxyLevel?: number | null
 
   // relations
   roots?: Root[]

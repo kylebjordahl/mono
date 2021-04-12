@@ -12,33 +12,29 @@
   </ion-header>
 
   <ng-container *ngFor="let host of hosts | keyvalue">
-    <ion-list>
-      <ion-card *ngFor="let root of host.value.roots | keyvalue">
-        <ion-card-header>
-          <ion-card-title> Host {{ host.value.key }} </ion-card-title>
-          <ion-card-subtitle>
-            Root {{ root.value.basePath }}
-          </ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-list>
-            <ion-list-header>Files</ion-list-header>
-            <ng-container
-              *ngFor="let fileInstance of root.value.files | keyvalue"
-            >
-              <ion-item *ngIf="fileInstance.value">
-                <ion-img
-                  slot="end"
-                  *ngIf="fileInstance.value.thumbnailBase64"
-                  [src]="'data:image/jpeg;base64,'+fileInstance.value.thumbnailBase64"
-                >
-                </ion-img>
-                <ion-label> File {{ fileInstance.value.address }} </ion-label>
-              </ion-item>
-            </ng-container>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
-    </ion-list>
+    <ion-card *ngFor="let root of host.value.roots | keyvalue">
+      <ion-card-header>
+        <ion-card-title> Host {{ host.value.key }} </ion-card-title>
+        <ion-card-subtitle> Root {{ root.value.basePath }} </ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-list-header>Files</ion-list-header>
+          <ng-container
+            *ngFor="let fileInstance of root.value.files | keyvalue"
+          >
+            <ion-item *ngIf="fileInstance.value">
+              <ion-img
+                slot="end"
+                *ngIf="fileInstance.value.thumbnailBase64"
+                [src]="'data:image/jpeg;base64,'+fileInstance.value.thumbnailBase64"
+              >
+              </ion-img>
+              <ion-label> File {{ fileInstance.value.address }} </ion-label>
+            </ion-item>
+          </ng-container>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
   </ng-container>
 </ion-content>
