@@ -1,14 +1,20 @@
 import { ArgusDb } from './argus.db'
 import { filenameToAsset } from '@lucidcreative/disguise-asset'
 import { getVersionId } from './utility/getVersionId'
+import { inspect } from 'util'
+import { FileInstance } from '../../../../../libs/argus/domain/src'
 
 export function startVersionMatcher(arg: { db: ArgusDb }) {
   const { db } = arg
   db.get('files')
     .map()
-    .on(async (file) => {
+    .on(async (file: FileInstance) => {
       if (file.version) {
         console.log(`Version already matched for [${file.address}]`)
+        return
+      }
+      if (!file.address) {
+        console.log(`Got file with no address! [${inspect(file)}]`)
         return
       }
       console.log(`Matching version for [${file.address}]`)
@@ -31,7 +37,9 @@ export function startVersionMatcher(arg: { db: ArgusDb }) {
         asset,
       })
 
-      versionNode.get('files').set(fileNode)
+      fileNode.put({ version: versionNode as any })
+
+      versionNode.get('files').set(fileNode as any)
 
       assetNode.put({ stem: processedAsset.stem })
 

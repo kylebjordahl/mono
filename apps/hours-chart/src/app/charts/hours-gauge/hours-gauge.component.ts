@@ -38,7 +38,7 @@ export class HoursGaugeComponent {
     )
   }
 
-  view: any[] = [600, 400]
+  view: [number, number] = [600, 400]
   legend: boolean = true
   legendPosition: string = 'below'
   colorScheme = {

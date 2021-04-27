@@ -33,9 +33,7 @@ export class Tab1Page implements OnInit, OnDestroy {
           .get('assets')
           .get(data.stem)
           .open((asset) => {
-            console.log('updating', asset)
             this.assets.set(asset.stem, asset)
-
             this.gun.db
               .get('assets')
               .get(asset.stem)
@@ -49,10 +47,6 @@ export class Tab1Page implements OnInit, OnDestroy {
                   .map()
                   // TODO: improve this, it currently updates whenever any file updates
                   .on((file) => {
-                    console.log(
-                      'setting thumb for version',
-                      file.thumbnailBase64
-                    )
                     this.versionThumbs.set(version.key, file.thumbnailBase64)
                     this.changeRef.detectChanges()
                   })

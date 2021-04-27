@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core'
 import { Version, Host } from '@kylebjordahl/argus/domain'
 import { Subject } from 'rxjs'
 import { GunService } from '../services/gun.service'
+import { TransferService } from '../transfer/transfer.service'
 
 @Component({
   selector: 'kylebjordahl-tab2',
@@ -11,17 +12,22 @@ import { GunService } from '../services/gun.service'
 export class Tab2Page {
   hosts = new Map<string | number | symbol, Host>()
   private unsubscribe$ = new Subject<void>()
-  constructor(private gun: GunService, private changeRef: ChangeDetectorRef) {}
+  constructor(
+    private gun: GunService,
+    private changeRef: ChangeDetectorRef,
+    public transfer: TransferService
+  ) {}
 
   ngOnInit() {
     this.gun.db
       .get('hosts')
       .map()
       .open((data) => {
-        console.log('hosts', data)
-        const host = (data as unknown) as Host
-        this.hosts.set(host.key, host)
-        this.changeRef.detectChanges()
+        if (data) {
+          const host = (data as unknown) as Host
+          this.hosts.set(host.key, host)
+          this.changeRef.detectChanges()
+        }
       })
   }
 

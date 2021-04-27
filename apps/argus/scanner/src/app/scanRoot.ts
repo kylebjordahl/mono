@@ -41,7 +41,7 @@ export async function scanRoot(arg: {
     })
     file.get('roots').set(root)
     // make a thumbnail if its an image!
-    const existingThumbnail = false //await file.get('thumbnailBase64').then()
+    const existingThumbnail = await file.get('thumbnailBase64').then()
     if (!existingThumbnail) {
       console.log(`Creating thumbnail for [${path}]`)
       const thumbnail = ((await imageThumbnail(path, {
@@ -62,6 +62,7 @@ export async function scanRoot(arg: {
     console.log(`Unlink [${path}]`)
     const file = getFileNode(path)
     root.get('files').unset((file as unknown) as FileInstance)
+    file.get('roots').unset(root as any)
   })
 
   return watcher

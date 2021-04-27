@@ -548,7 +548,9 @@
           "options": {
             "browserTarget": "argus-client:build",
             "port": 3456,
+            "host": "0.0.0.0",
             "disableHostCheck": true,
+            "ssl": true,
             "proxyConfig": "apps/argus/client/proxy.conf.json"
           },
           "configurations": {
@@ -736,8 +738,31 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
+            "port": 34566,
             "buildTarget": "argus-scanner:build",
-            "args": ["-p", "test", "-r", "/Users/kyle/Desktop/scan-test"]
+            "args": [
+              "-p",
+              "test",
+              "-r",
+              "/Users/kyle/Desktop/scan-test",
+              "-r",
+              "/Users/kyle/Desktop/rcv-test",
+              "--key",
+              "2f6b65792f737761726d2f70736b2f312e302e302f0a2f6261736531362f0a63656438333630636631636235373430613934383930623638386232313434363664336132633633373938636165313663623239366638663061316565396135"
+            ]
+          },
+          "configurations": {
+            "second": {
+              "args": [
+                "-p",
+                "test",
+                "-r",
+                "/Users/kyle/Desktop/rcv-test",
+
+                "--key",
+                "2f6b65792f737761726d2f70736b2f312e302e302f0a2f6261736531362f0a63656438333630636631636235373430613934383930623638386232313434363664336132633633373938636165313663623239366638663061316565396135"
+              ]
+            }
           }
         },
         "lint": {
