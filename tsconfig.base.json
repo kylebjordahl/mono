@@ -16,7 +16,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@kylebjordahl/argus/domain": ["libs/argus/domain/src/index.ts"]
+      "@argus/domain": ["libs/argus/domain/src/index.ts"],
+      "@argus/watcher": ["libs/argus/watcher/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"],

@@ -758,7 +758,6 @@
                 "test",
                 "-r",
                 "/Users/kyle/Desktop/rcv-test",
-
                 "--key",
                 "2f6b65792f737761726d2f70736b2f312e302e302f0a2f6261736531362f0a63656438333630636631636235373430613934383930623638386232313434363664336132633633373938636165313663623239366638663061316565396135"
               ]
@@ -825,6 +824,77 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/argus/watchtower/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "argus-scanner-nest": {
+      "root": "apps/argus/scanner-nest",
+      "sourceRoot": "apps/argus/scanner-nest/src",
+      "projectType": "application",
+      "prefix": "argus-scanner-nest",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/argus/scanner-nest",
+            "main": "apps/argus/scanner-nest/src/main.ts",
+            "tsConfig": "apps/argus/scanner-nest/tsconfig.app.json",
+            "assets": ["apps/argus/scanner-nest/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/argus/scanner-nest/src/environments/environment.ts",
+                  "with": "apps/argus/scanner-nest/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "argus-scanner-nest:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/argus/scanner-nest/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/argus/scanner-nest/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "argus-watcher": {
+      "root": "libs/argus/watcher",
+      "sourceRoot": "libs/argus/watcher/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/argus/watcher/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/argus/watcher"],
+          "options": {
+            "jestConfig": "libs/argus/watcher/jest.config.js",
             "passWithNoTests": true
           }
         }

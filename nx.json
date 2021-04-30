@@ -61,6 +61,12 @@
     },
     "argus-watchtower": {
       "tags": []
+    },
+    "argus-scanner-nest": {
+      "tags": []
+    },
+    "argus-watcher": {
+      "tags": []
     }
   }
 }

@@ -40,5 +40,8 @@
         }
       ]
     }
-  ]
+],
+"typescript.preferences.quoteStyle": "single",
+"typescript.preferences.includePackageJsonAutoImports": "on",
+"typescript.preferences.importModuleSpecifier": "project-relative"
 }

@@ -8,7 +8,7 @@ import { Duration } from 'luxon'
 export class ProjectValuePipe implements PipeTransform {
   transform(
     projects: { id?: string | number; value: number }[],
-    projectId: string
+    projectId: string | number
   ) {
     return projects.find((project) => project.id === projectId)?.value
   }
