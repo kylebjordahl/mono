@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { DbService } from './db.service'
 import { machineIdSync } from 'node-machine-id'
 import { IGunChainReference } from 'gun/types/chain'
 import { GunRoot, Host } from '@argus/domain'
-import { map, pairwise, shareReplay } from 'rxjs/operators'
+import { map, pairwise, share, shareReplay, take, tap } from 'rxjs/operators'
 import { merge, Observable, of } from 'rxjs'
 import { hostname } from 'os'
 
@@ -18,6 +18,14 @@ export class HostService {
     shareReplay(1)
   )
 
+  get hostNode$(): Observable<IGunChainReference<Host>> {
+    return this._hostNode$.pipe()
+  }
+
+  get hostNode(): Promise<IGunChainReference<Host>> {
+    return this.hostNode$.toPromise()
+  }
+
   private _hostNodePairwise$ = merge(of(undefined), this._hostNode$).pipe(
     pairwise<undefined | IGunChainReference<Host>>(),
     shareReplay(1)
@@ -29,15 +37,18 @@ export class HostService {
   }
 
   get host(): Promise<Host> {
-    // this is dumb, but it's basically a double layer promise...
-    return this._hostNode$.toPromise().then((node) => node.then())
+    return (this._hostNode$.pipe(take(1)).toPromise() as unknown) as Promise<
+      Host
+    >
   }
 
-  constructor(private db: DbService) {
+  constructor(private db: DbService, private logger: Logger) {
+    this.logger.setContext('HostService')
     this._hostNode$.subscribe((hostNode) => {
       // set up a listener to reset the name of the host if it becomes null
       hostNode.on((h) => {
         if (!h.name) {
+          this.logger.verbose(`Resetting hostname`)
           hostNode.put({ name: hostname() })
         }
       })
@@ -47,11 +58,13 @@ export class HostService {
   private makeHostNode(
     project: IGunChainReference<GunRoot>
   ): IGunChainReference<Host> {
+    this.logger.debug(`Creating host [${this.machineId}] in project`)
     const hostNode = project
       .get(`hosts`)
       .get(this.machineId)
       .put({ key: this.machineId, name: hostname() })
 
+    this.logger.debug(`Host node created for [${hostname()}]`)
     return hostNode
   }
 }

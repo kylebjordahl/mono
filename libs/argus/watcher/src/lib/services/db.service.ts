@@ -1,14 +1,22 @@
 import { GunRoot } from '@argus/domain'
-import { Injectable, OnModuleDestroy } from '@nestjs/common'
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common'
 import * as Gun from 'gun'
 import { IGunChainReference } from 'gun/types/chain'
 import { BehaviorSubject, Observable, Subject } from 'rxjs'
-import { filter, map, pairwise, takeUntil } from 'rxjs/operators'
+import {
+  filter,
+  map,
+  pairwise,
+  shareReplay,
+  takeUntil,
+  tap,
+} from 'rxjs/operators'
 
 // also do gun imports here, because why not
 import 'gun/lib/unset'
 import 'gun/lib/time'
 import 'gun/lib/open'
+import 'gun/lib/then'
 
 @Injectable()
 export class DbService implements OnModuleDestroy {
@@ -25,7 +33,11 @@ export class DbService implements OnModuleDestroy {
     return this._projectId$.pipe(
       takeUntil(this.unsubscribe$),
       filter((x) => !!x),
-      map((projectId) => this._gun.get(projectId))
+      tap((projectId) =>
+        this.logger.log(`Project ID is set to [${projectId}]`, 'DB')
+      ),
+      map((projectId) => this._gun.get(projectId)),
+      shareReplay(1)
     )
   }
 
@@ -41,7 +53,8 @@ export class DbService implements OnModuleDestroy {
     return this._projectId$.pipe(
       takeUntil(this.unsubscribe$),
       map((projectId) => (projectId ? this._gun.get(projectId) : undefined)),
-      pairwise()
+      pairwise(),
+      shareReplay(1)
     )
   }
 
@@ -56,6 +69,8 @@ export class DbService implements OnModuleDestroy {
 
   private _projectId$ = new BehaviorSubject<string>(undefined)
   private unsubscribe$ = new Subject()
+
+  constructor(private logger: Logger) {}
 
   onModuleDestroy() {
     this.unsubscribe$.next()

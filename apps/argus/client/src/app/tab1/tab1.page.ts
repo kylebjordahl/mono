@@ -8,7 +8,7 @@ import {
 import { Subject } from 'rxjs'
 import { GunService } from '../services/gun.service'
 import * as R from 'ramda'
-import { Version, Asset } from '@kylebjordahl/argus/domain'
+import { Version, Asset } from '@argus/domain'
 
 @Component({
   selector: 'kylebjordahl-tab1',

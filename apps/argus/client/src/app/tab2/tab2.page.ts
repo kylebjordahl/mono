@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core'
-import { Version, Host } from '@kylebjordahl/argus/domain'
+import { Version, Host } from '@argus/domain'
 import { Subject } from 'rxjs'
 import { GunService } from '../services/gun.service'
 import { TransferService } from '../transfer/transfer.service'

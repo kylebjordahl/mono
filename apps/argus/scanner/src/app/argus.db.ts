@@ -1,5 +1,5 @@
 import * as Gun from 'gun'
-import { ArgusEvent, GunRoot } from '@kylebjordahl/argus/domain'
+import { ArgusEvent, GunRoot } from '@argus/domain'
 import { IGunChainReference } from 'gun/types/chain'
 
 let gun: IGunChainReference<Record<string, GunRoot | ArgusEvent[]>>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { GunRoot, Version } from '@kylebjordahl/argus/domain'
+import { GunRoot, Version } from '@argus/domain'
 import * as Gun from 'gun/gun'
 import { Observable, ReplaySubject } from 'rxjs'
 

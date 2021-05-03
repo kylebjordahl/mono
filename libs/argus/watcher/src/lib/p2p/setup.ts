@@ -1,14 +1,15 @@
 import { IGunChainReference } from 'gun/types/chain'
-import { ArgusDb } from '../argus.db'
+
 import { privateLibp2pNode } from './node.p2p'
-import { generate } from 'libp2p/src/pnet'
+
 import {
   FileInstance,
+  GunRoot,
   Host,
   Root,
   TransferEvent,
   TransferStatus,
-} from '@kylebjordahl/argus/domain'
+} from '@argus/domain'
 import type { Connection, Multiaddr, MuxedStream } from 'libp2p'
 import { pipe } from 'it-pipe'
 import { decode, encode } from 'it-length-prefixed'
@@ -16,18 +17,16 @@ import * as Gun from 'gun'
 import * as PeerId from 'peer-id'
 import { getCleanMultiaddr } from 'libp2p/src/identify'
 import 'gun/lib/bye'
-import * as execa from 'execa'
 import { ensureDir } from 'fs-extra'
 import { join, dirname, relative } from 'path'
-import * as R from 'ramda'
-import { awaitSouls } from '../utility/awaitSouls'
+import { awaitSouls } from '../functions/utility/awaitSouls'
 import { createReadStream, createWriteStream } from 'fs'
 import { once } from 'events'
 import { finished } from 'stream'
 import { promisify } from 'util'
 
 export async function setupP2p(args: {
-  db: ArgusDb
+  db: IGunChainReference<GunRoot>
   rootNode: IGunChainReference<Root>
   swarmKey: string
 }) {

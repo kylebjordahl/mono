@@ -1,5 +1,5 @@
 import { watch } from 'chokidar'
-import type { FileInstance, Root } from '@kylebjordahl/argus/domain'
+import type { FileInstance, Root } from '@argus/domain'
 import type { ArgusDb } from './argus.db'
 import { extname, relative } from 'path'
 import { IGunChainReference } from 'gun/types/chain'

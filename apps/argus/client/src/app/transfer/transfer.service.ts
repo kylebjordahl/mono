@@ -5,7 +5,7 @@ import {
   TransferEvent,
   TransferStatus,
   WithGunSoul,
-} from '@kylebjordahl/argus/domain'
+} from '@argus/domain'
 import type { IGunChainReference } from 'gun/types/chain'
 import { GunService } from '../services/gun.service'
 import * as R from 'ramda'

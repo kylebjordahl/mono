@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  LoggerService,
-  OnApplicationBootstrap,
-} from '@nestjs/common'
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { IGunChainReference } from 'gun/types/chain'
 
 import { FileInstance, GunRoot } from '@argus/domain'
@@ -13,7 +9,7 @@ import { getVersionId } from '../functions/utility/getVersionId'
 
 @Injectable()
 export class VersionMatcherService implements OnApplicationBootstrap {
-  constructor(private db: DbService, private logger: LoggerService) {}
+  constructor(private db: DbService, private logger: Logger) {}
 
   onApplicationBootstrap() {
     this.db.projectPairwise$.subscribe(([prev, project]) => {
@@ -30,16 +26,22 @@ export class VersionMatcherService implements OnApplicationBootstrap {
 
   async processFile(file: FileInstance, project: IGunChainReference<GunRoot>) {
     if (file.version) {
-      this.logger.log(`Version already matched for [${file.address}]`)
+      this.logger.verbose(
+        `Version already matched for [${file.address}]`,
+        'VersionMatcher'
+      )
       return
     }
 
     if (!file.address) {
-      this.logger.log(`Got file with no address! [${inspect(file)}]`)
+      this.logger.warn(
+        `Got file with no address! [${inspect(file)}]`,
+        'VersionMatcher'
+      )
       return
     }
 
-    console.log(`Matching version for [${file.address}]`)
+    this.logger.log(`Matching version for [${file.address}]`, 'VersionMatcher')
     const processedAsset = filenameToAsset(file.address)
 
     const fileNode = project.get('files').get(file.address)

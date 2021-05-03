@@ -1,6 +1,7 @@
 import {
   BeforeApplicationShutdown,
   Injectable,
+  Logger,
   OnApplicationBootstrap,
 } from '@nestjs/common'
 import * as Gun from 'gun'
@@ -9,7 +10,6 @@ import { FileInstance, GunRoot, Host, Root } from '@argus/domain'
 import * as imageThumbnail from 'image-thumbnail'
 import { watch } from 'chokidar'
 import { IGunChainReference } from 'gun/types/chain'
-import { createHash } from 'crypto'
 import { FSWatcher } from 'node:fs'
 import { DbService } from './db.service'
 import { HostService } from './host.service'
@@ -19,7 +19,11 @@ export class FileMonitorService
   implements OnApplicationBootstrap, BeforeApplicationShutdown {
   private activeMonitors = new Map<string, FSWatcher>()
 
-  constructor(private db: DbService, private host: HostService) {}
+  constructor(
+    private db: DbService,
+    private host: HostService,
+    private logger: Logger
+  ) {}
 
   async onApplicationBootstrap() {
     this.host.hostNodePairwise$.subscribe(async ([prev, current]) => {
@@ -50,6 +54,9 @@ export class FileMonitorService
     host: IGunChainReference<Host>
   }) {
     const rootData = args.root
+    if (!rootData.basePath) {
+      return
+    }
     const rootNode = this.db.project
       .back(-1)
       .get(rootData['#']) as IGunChainReference<Root>
@@ -60,7 +67,7 @@ export class FileMonitorService
       ignored: /(^|[/\\])\../, // ignore dotfiles
     })
 
-    console.log('ready to scan', rootData.basePath)
+    this.logger.log(`ready to scan [${rootData.basePath}]`, 'FileMonitor')
 
     const getFileNode = (path: string) => {
       const address = relative(rootData.basePath, path)
@@ -68,12 +75,12 @@ export class FileMonitorService
         .get(`files`)
         .get(address)
         .put({ address } as FileInstance)
-      console.log('Processed file', address)
+      this.logger.debug(`Processed file [${address}]`, 'FileMonitor')
       return file
     }
 
     watcher.on('add', async (path, stat) => {
-      console.log(`Found [${path}]`)
+      this.logger.log(`Found [${path}]`, 'FileMonitor')
       const file = getFileNode(path)
       const fileData = await file.then()
       rootNode.get('files').set(fileData)
@@ -86,7 +93,7 @@ export class FileMonitorService
       // make a thumbnail if its an image!
       const existingThumbnail = await file.get('thumbnailBase64').then()
       if (!existingThumbnail) {
-        console.log(`Creating thumbnail for [${path}]`)
+        this.logger.debug(`Creating thumbnail for [${path}]`, 'FileMonitor')
         const thumbnail = ((await imageThumbnail(path, {
           responseType: 'base64',
           height: 67,
@@ -97,12 +104,15 @@ export class FileMonitorService
         } as any)) as unknown) as string
         file.put({ thumbnailBase64: thumbnail })
       } else {
-        console.log(`Thumbnail already exists for [${path}]`)
+        this.logger.debug(
+          `Thumbnail already exists for [${path}]`,
+          'FileMonitor'
+        )
       }
     })
 
     watcher.on('unlink', async (path) => {
-      console.log(`Unlink [${path}]`)
+      this.logger.debug(`Unlink [${path}]`, 'FileMonitor')
       const file = getFileNode(path)
       const fileData = await file.then()
       rootNode.get('files').unset(fileData)

@@ -62,10 +62,10 @@
     "argus-watchtower": {
       "tags": []
     },
-    "argus-scanner-nest": {
+    "argus-watcher": {
       "tags": []
     },
-    "argus-watcher": {
+    "argus-watcher-cli": {
       "tags": []
     }
   }

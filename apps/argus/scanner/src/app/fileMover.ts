@@ -6,7 +6,7 @@ import {
   Root,
   TransferEvent,
   TransferStatus,
-} from '@kylebjordahl/argus/domain'
+} from '@argus/domain'
 import { IGunChainReference } from 'gun/types/chain'
 import { basename, dirname, join, relative } from 'path'
 import { platform, tmpdir } from 'os'

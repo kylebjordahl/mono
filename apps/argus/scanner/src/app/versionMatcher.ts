@@ -2,7 +2,7 @@ import { ArgusDb } from './argus.db'
 import { filenameToAsset } from '@lucidcreative/disguise-asset'
 import { getVersionId } from './utility/getVersionId'
 import { inspect } from 'util'
-import { FileInstance } from '../../../../../libs/argus/domain/src'
+import { FileInstance } from '@argus/domain'
 
 export function startVersionMatcher(arg: { db: ArgusDb }) {
   const { db } = arg
