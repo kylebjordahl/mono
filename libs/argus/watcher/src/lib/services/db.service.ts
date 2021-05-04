@@ -64,6 +64,10 @@ export class DbService implements OnModuleDestroy {
    * **DO NOT USE THIS FOR LONG TERM SUBSCRIPTIONS** as it will not update when the project is changed
    */
   get project(): IGunChainReference<GunRoot> {
+    if (!this._projectId$.value) {
+      throw Error('PROJECT_ID_NOT_SET')
+    }
+    console.log('getting project', this._projectId$.value)
     return this._gun.get(this._projectId$.value)
   }
 

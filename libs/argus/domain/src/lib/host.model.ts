@@ -5,5 +5,5 @@ export interface Host {
   key: string
 
   transferInterface: string
-  roots: Root[]
+  roots: Record<string, Root>
 }

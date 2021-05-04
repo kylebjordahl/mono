@@ -28,7 +28,7 @@ const logger = WinstonModule.createLogger({
       ),
     }),
   ],
-  level: 'info',
+  level: 'debug',
 })
 
 const bootstrap = new BootstrapConsole({

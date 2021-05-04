@@ -31,7 +31,7 @@ export class Tab1Page implements OnInit, OnDestroy {
       .once(async (data) =>
         this.gun.db
           .get('assets')
-          .get(data.stem)
+          .get(((data as unknown) as Asset).stem)
           .open((asset) => {
             this.assets.set(asset.stem, asset)
             this.gun.db
@@ -42,12 +42,15 @@ export class Tab1Page implements OnInit, OnDestroy {
               .on((version) => {
                 this.gun.db
                   .get('versions')
-                  .get(version.key)
+                  .get(((version as unknown) as Version).key)
                   .get('files')
                   .map()
                   // TODO: improve this, it currently updates whenever any file updates
                   .on((file) => {
-                    this.versionThumbs.set(version.key, file.thumbnailBase64)
+                    this.versionThumbs.set(
+                      ((version as unknown) as Version).key,
+                      file.thumbnailBase64
+                    )
                     this.changeRef.detectChanges()
                   })
               })
