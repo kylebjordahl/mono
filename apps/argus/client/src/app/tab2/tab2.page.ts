@@ -19,16 +19,14 @@ export class Tab2Page {
   ) {}
 
   ngOnInit() {
-    this.gun.db
-      .get('hosts')
-      .map()
-      .open((data) => {
-        if (data) {
-          const host = (data as unknown) as Host
-          this.hosts.set(host.key, host)
-          this.changeRef.detectChanges()
+    this.gun.db.get('hosts').open((data) => {
+      for (const [key, host] of Object.entries(data)) {
+        if (host) {
+          this.hosts.set(key, host)
         }
-      })
+      }
+      this.changeRef.detectChanges()
+    })
   }
 
   ngOnDestroy() {
