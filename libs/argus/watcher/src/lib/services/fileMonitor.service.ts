@@ -17,8 +17,7 @@ import { combineLatest } from 'rxjs'
 
 const loggerScope = 'FileMonitor'
 @Injectable()
-export class FileMonitorService
-  implements OnApplicationBootstrap, BeforeApplicationShutdown {
+export class FileMonitorService implements BeforeApplicationShutdown {
   private activeMonitors = new Map<string, FSWatcher>()
 
   constructor(
@@ -27,28 +26,11 @@ export class FileMonitorService
     private logger: Logger
   ) {}
 
-  async onApplicationBootstrap() {
-    combineLatest([this.host.hostNodePairwise$, this.db.project$]).subscribe(
-      async ([[prev, current], project]) => {
-        if (prev) {
-          this.logger.log(`Canceling old watchers`, loggerScope)
-          prev.get('roots').map().off()
-          await this.stopAllWatchers()
-        }
-        current
-          .get('roots')
-          .map()
-          .on((root) => {
-            this.scanNewRoot({ root, host: current, project })
-          })
-      }
-    )
-  }
-
   /** shut down all watchers when the application stops */
   async beforeApplicationShutdown() {
     await this.stopAllWatchers()
   }
+
   private async stopAllWatchers() {
     const tasks = [...this.activeMonitors.values()].map((watcher) => {
       watcher.close
@@ -57,15 +39,14 @@ export class FileMonitorService
   }
 
   public async scanNewRoot(args: {
-    root: Root
-    host: IGunChainReference<Host>
-    project: IGunChainReference<GunRoot>
+    rootNode: IGunChainReference<Root>
+    rootData: Root
   }) {
-    const rootData = args.root
+    const { rootNode, rootData } = args
     if (!rootData.basePath) {
       return
     }
-    if (this.activeMonitors.has(this.makeWatcherKey(args.root))) {
+    if (this.activeMonitors.has(this.makeWatcherKey(rootData))) {
       this.logger.debug(`already scanning [${rootData.basePath}]`, loggerScope)
       return
     }
@@ -76,7 +57,6 @@ export class FileMonitorService
         loggerScope
       )
     }
-    const rootNode = args.host.get('roots').get(args.root.basePath)
 
     const watcher = watch(rootData.basePath, {
       alwaysStat: true,
@@ -92,7 +72,7 @@ export class FileMonitorService
 
     const getFileNode = (path: string) => {
       const address = relative(rootData.basePath, path)
-      const file = args.project
+      const file = this.db.project
         .get(`files`)
         .get(address)
         .put({ address } as FileInstance)
@@ -110,7 +90,7 @@ export class FileMonitorService
         modifiedAt: stat.mtime.toISOString(),
         createdAt: stat.ctime.toISOString(),
       })
-      file.get('roots').set(rootData)
+      file.get('roots').set(rootNode as any)
       // make a thumbnail if its an image!
       const existingThumbnail = await file.get('thumbnailBase64').then()
       if (!existingThumbnail) {
@@ -127,7 +107,7 @@ export class FileMonitorService
       const fileData = await file.then()
       rootNode.get('files').unset(fileData)
       file.get('roots').unset(rootData)
-      args.project.get('files').get(path).put(null)
+      this.db.project.get('files').get(path).put(null)
       // maybe this does everything we need?
       file.put(null)
     })

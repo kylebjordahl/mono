@@ -24,7 +24,8 @@ export class TransferService {
     })
   }
 
-  async initiateTransfer(fileSoul: string) {
+  async initiateTransfer(safeSoul: string | number) {
+    const fileSoul = (safeSoul as unknown) as string
     const fileNode = this.gun.db
       .back(-1)
       .get(fileSoul as string) as IGunChainReference<FileInstance>

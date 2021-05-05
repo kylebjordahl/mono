@@ -1,6 +1,5 @@
 export * from './lib/watcher.module'
 export * from './lib/functions'
 export * from './lib/services/db.service'
-// export * from './lib/services/fileMonitor.service'
+export * from './lib/services/root.service'
 export * from './lib/services/host.service'
-// export * from './lib/services/p2p.service'

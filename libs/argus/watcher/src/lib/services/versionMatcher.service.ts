@@ -8,23 +8,17 @@ import { filenameToAsset } from '@lucidcreative/disguise-asset'
 import { getVersionId } from '../functions/utility/getVersionId'
 
 @Injectable()
-export class VersionMatcherService implements OnApplicationBootstrap {
+export class VersionMatcherService {
   constructor(private db: DbService, private logger: Logger) {}
 
-  onApplicationBootstrap() {
-    this.db.projectPairwise$.subscribe(([prev, project]) => {
-      if (prev) {
-        // remove listeners from old project
-        prev.get('files').map().off()
-      }
-      project
-        .get('files')
-        .map()
-        .on((file) => this.processFile(file, project))
-    })
+  start() {
+    this.db.project
+      .get('files')
+      .map()
+      .on((file) => this.processFile(file))
   }
 
-  async processFile(file: FileInstance, project: IGunChainReference<GunRoot>) {
+  async processFile(file: FileInstance) {
     if (file.version) {
       this.logger.verbose(
         `Version already matched for [${file.address}]`,
@@ -44,18 +38,18 @@ export class VersionMatcherService implements OnApplicationBootstrap {
     this.logger.log(`Matching version for [${file.address}]`, 'VersionMatcher')
     const processedAsset = filenameToAsset(file.address)
 
-    const fileNode = project.get('files').get(file.address)
+    const fileNode = this.db.project.get('files').get(file.address)
 
     if (processedAsset.proxyLevel) {
       fileNode.put({ proxyLevel: processedAsset.proxyLevel })
     }
-    const assetNode = project.get('assets').get(processedAsset.stem)
+    const assetNode = this.db.project.get('assets').get(processedAsset.stem)
 
     const asset = await assetNode.then()
 
     const versionTag = processedAsset.version ?? ''
     const versionId = getVersionId({ processedAsset })
-    const versionNode = project.get('versions').get(versionId).put({
+    const versionNode = this.db.project.get('versions').get(versionId).put({
       key: versionId,
       versionTag,
       asset,

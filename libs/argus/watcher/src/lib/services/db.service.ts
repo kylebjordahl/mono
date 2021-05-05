@@ -26,37 +26,37 @@ export class DbService implements OnModuleDestroy {
     radisk: false,
   })
 
-  /**
-   * the db will emit a new gun db node each time the project is changed
-   */
-  get project$(): Observable<IGunChainReference<GunRoot>> {
-    return this._projectId$.pipe(
-      takeUntil(this.unsubscribe$),
-      filter((x) => !!x),
-      tap((projectId) =>
-        this.logger.log(`Project ID is set to [${projectId}]`, 'DB')
-      ),
-      map((projectId) => this._gun.get(projectId)),
-      shareReplay(1)
-    )
-  }
+  //   /**
+  //    * the db will emit a new gun db node each time the project is changed
+  //    */
+  //   get project$(): Observable<IGunChainReference<GunRoot>> {
+  //     return this._projectId$.pipe(
+  //       takeUntil(this.unsubscribe$),
+  //       filter((x) => !!x),
+  //       tap((projectId) =>
+  //         this.logger.log(`Project ID is set to [${projectId}]`, 'DB')
+  //       ),
+  //       map((projectId) => this._gun.get(projectId)),
+  //       shareReplay(1)
+  //     )
+  //   }
 
-  /**
-   * emits pairs of [prevProject, currentProject] where either may be undefined
-   */
-  get projectPairwise$(): Observable<
-    [
-      IGunChainReference<GunRoot> | undefined,
-      IGunChainReference<GunRoot> | undefined
-    ]
-  > {
-    return this._projectId$.pipe(
-      takeUntil(this.unsubscribe$),
-      map((projectId) => (projectId ? this._gun.get(projectId) : undefined)),
-      pairwise(),
-      shareReplay(1)
-    )
-  }
+  //   /**
+  //    * emits pairs of [prevProject, currentProject] where either may be undefined
+  //    */
+  //   get projectPairwise$(): Observable<
+  //     [
+  //       IGunChainReference<GunRoot> | undefined,
+  //       IGunChainReference<GunRoot> | undefined
+  //     ]
+  //   > {
+  //     return this._projectId$.pipe(
+  //       takeUntil(this.unsubscribe$),
+  //       map((projectId) => (projectId ? this._gun.get(projectId) : undefined)),
+  //       pairwise(),
+  //       shareReplay(1)
+  //     )
+  //   }
 
   /**
    * Static instance of the project node
@@ -64,14 +64,14 @@ export class DbService implements OnModuleDestroy {
    * **DO NOT USE THIS FOR LONG TERM SUBSCRIPTIONS** as it will not update when the project is changed
    */
   get project(): IGunChainReference<GunRoot> {
-    if (!this._projectId$.value) {
+    if (!this._projectId) {
       throw Error('PROJECT_ID_NOT_SET')
     }
-    console.log('getting project', this._projectId$.value)
-    return this._gun.get(this._projectId$.value)
+    console.log('getting project', this._projectId)
+    return this._gun.get(this._projectId)
   }
 
-  private _projectId$ = new BehaviorSubject<string>(undefined)
+  private _projectId
   private unsubscribe$ = new Subject()
 
   constructor(private logger: Logger) {}
@@ -82,6 +82,6 @@ export class DbService implements OnModuleDestroy {
   }
 
   setProjectId(projectId: string) {
-    this._projectId$.next(projectId)
+    this._projectId = projectId
   }
 }

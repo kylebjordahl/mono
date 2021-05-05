@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common'
 import { Command, Console } from 'nestjs-console'
-import { DbService, getRootId, HostService } from '@argus/watcher'
+import { DbService, getRootId, HostService, RootService } from '@argus/watcher'
 import { IGunChainReference } from 'gun/types/chain'
 import { Host, Root } from '@argus/domain'
 import * as commander from 'commander'
@@ -16,7 +16,8 @@ export class ListenCommand {
   constructor(
     private db: DbService,
     private host: HostService,
-    private logger: Logger // private p2p: P2PService
+    private logger: Logger,
+    private rootService: RootService
   ) {
     this.logger.setContext('CLI')
   }
@@ -45,33 +46,12 @@ export class ListenCommand {
 
     this.logger.log(`Initializing for project [${projectId}]`)
     this.db.setProjectId(projectId)
-
-    this.db.project$.subscribe(async (project) => {
-      const host = await this.host.host
-      this.logger.log(`Setting up [${rootPaths.length}] root paths`)
-      // const host = await hostNode.then()
-      rootPaths.map(async (rootPath) => {
-        this.logger.log(`Intializing root path [${rootPath}]`)
-        const rootNode = project
-          .get('roots')
-          .get(getRootId({ basePath: rootPath, hostKey: host.key }))
-          .put({
-            basePath: rootPath,
-            host: host,
-            swarmKey,
-          })
-        const rootData = await rootNode.then()
-
-        // this.logger.log(`Created root [${rootData.basePath}]`)
-        project
-          .get('hosts')
-          .get(host.key)
-          .get('roots')
-          .get(rootPath)
-          .put(rootNode as any)
-
-        // this.p2p.setupPeer({ rootNode: root, swarmKey })
-      })
+    this.db.project.get('swarmKey').put(swarmKey)
+    await this.host.assertHost()
+    this.logger.log(`Setting up [${rootPaths.length}] root paths`)
+    // const host = await hostNode.then()
+    rootPaths.map(async (rootPath) => {
+      await this.rootService.assertRoot({ basePath: rootPath })
     })
   }
 }
